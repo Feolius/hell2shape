@@ -1,0 +1,7 @@
+parameters:
+	level: 8
+	paths:
+		- src
+	ignoreErrors:
+	typeAliases:
+		Langcode: '"en"|"de"|"es"|"fr"|"ko"|"ru"|"zh-hans"'
