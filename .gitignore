@@ -29,3 +29,5 @@
 # Local configuration files
 config/local.php
 config/*.local.php
+
+.playground/

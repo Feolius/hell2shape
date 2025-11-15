@@ -4,5 +4,10 @@
         "phpstan/phpstan": "^2.1",
         "symplify/easy-coding-standard": "^13.0",
         "phpunit/phpunit": "^12.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
     }
 }
