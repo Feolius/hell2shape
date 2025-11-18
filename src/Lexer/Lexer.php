@@ -42,14 +42,53 @@ final class Lexer
 
     public const string T_WS = 'ws';
 
+    private ?string $regexp = null;
+
     /**
      * @return list<Token>
      * @throws LexerException
      */
     public function tokenize(string $input): array
     {
-        $tokens = [];
+        if (is_null($this->regexp)) {
+            $this->regexp = $this->buildRegexp();
+        }
 
+        preg_match_all($this->regexp, $input, $matches, PREG_SET_ORDER);
+
+        $tokens = [];
+        $inputLen = mb_strlen($input);
+        $line = 1;
+        $column = 1;
+        $tokensLen = 0;
+        foreach ($matches as $match) {
+            $type = $match['MARK'];
+            $tokens[] = new Token($type, $match[0], $line, $column);
+            $tokensLen += mb_strlen($match[0]);
+            if ($type === self::T_NEWLINE) {
+                $line++;
+                $column = 1;
+                continue;
+            }
+            if ($type === self::T_STRING) {
+                $textLines = explode("\n", $match[0]);
+                $line += count($textLines) - 1;
+                $column += mb_strlen(end($textLines));
+                continue;
+            }
+            $column += mb_strlen($match[0]);
+        }
+
+        if ($inputLen !== $tokensLen) {
+            $wrongInput = mb_substr($input, $tokensLen);
+            throw new LexerException($wrongInput, $line, $column);
+        }
+
+        return $tokens;
+    }
+
+    private function buildRegexp(): string
+    {
         $patterns = [
             self::T_STRING => 'string\(\d+\) \"[^\"]*\"',
             self::T_INT => 'int\(\d+\)',
@@ -73,41 +112,9 @@ final class Lexer
         ];
 
         foreach ($patterns as $type => &$pattern) {
-            $pattern = '(?:' . $pattern . ')(*MARK:' . $type . ')';
+            $pattern = '(?:'.$pattern.')(*MARK:'.$type.')';
         }
 
-        $regexp = '~' . implode('|', $patterns) . '~Asui';
-
-        $res = preg_match_all($regexp, $input, $matches, PREG_SET_ORDER);
-
-        $tokens = [];
-        $inputLen = mb_strlen($input);
-        $line = 1;
-        $column = 1;
-        $tokensLen = 0;
-        foreach ($matches as $match) {
-            $type = $match['MARK'];
-            $tokens[] = new Token($type, $match[0], $line, $column);
-            $tokensLen += mb_strlen($match[0]);
-            if($type === self::T_NEWLINE) {
-                $line++;
-                $column = 1;
-                continue;
-            }
-            if ($type === self::T_STRING) {
-                $textLines = explode("\n", $match[0]);
-                $line += count($textLines) - 1;
-                $column += mb_strlen(end($textLines));
-                continue;
-            }
-            $column += mb_strlen($match[0]);
-        }
-
-        if ($inputLen !== $tokensLen) {
-            // @TODO throw exception here
-        }
-
-
-        return $tokens;
+        return '~'.implode('|', $patterns).'~Asui';
     }
 }
