@@ -42,6 +42,8 @@ final class Lexer
 
     public const string T_WS = 'ws';
 
+    public const string T_END = 'end';
+
     private ?string $regexp = null;
 
     /**
@@ -83,6 +85,8 @@ final class Lexer
             $wrongInput = mb_substr($input, $tokensLen);
             throw new LexerException($wrongInput, $line, $column);
         }
+
+        $tokens[] = new Token(self::T_END, '', $line, $column);
 
         return $tokens;
     }
