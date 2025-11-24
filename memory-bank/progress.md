@@ -10,12 +10,14 @@
 - Project initialization
 - Development environment setup
 - Lexer component specification
+- Parser component implementation
 
 ## Next Milestones
-1. Initialize composer project
-2. Implement basic Lexer
-3. Create test cases for sample var_dump inputs
-4. Set up CI/CD pipeline
+1. Implement basic Parser
+2. Create test cases for sample var_dump inputs
+3. Set up CI/CD pipeline
+- [x] Initialize composer project
+- [x] Implement basic Lexer
 
 ## Known Issues
 - Need to define var_dump parsing edge cases
