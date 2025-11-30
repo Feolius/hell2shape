@@ -65,6 +65,9 @@ final class Parser
         };
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseInt(): IntNode
     {
         $token = $this->consume(Lexer::T_INT);
@@ -72,6 +75,9 @@ final class Parser
         return new IntNode((int)$matches[1]);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseFloat(): FloatNode
     {
         $token = $this->consume(Lexer::T_FLOAT);
@@ -79,6 +85,9 @@ final class Parser
         return new FloatNode((float)$matches[1]);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseString(): StringNode
     {
         $token = $this->consume(Lexer::T_STRING);
@@ -86,6 +95,9 @@ final class Parser
         return new StringNode($matches[1]);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseBool(): BoolNode
     {
         $token = $this->consume(Lexer::T_BOOL);
@@ -93,12 +105,18 @@ final class Parser
         return new BoolNode($matches[1] === 'true');
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseNull(): NullNode
     {
         $this->consume(Lexer::T_NULL);
         return new NullNode();
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseStdObject(): StdObjectNode
     {
         $this->consume(Lexer::T_STD_OBJECT);
@@ -106,12 +124,10 @@ final class Parser
 
         $items = [];
         while ($this->getCurrentToken()->type !== Lexer::T_CLOSE_BRACE) {
-            $this->skipWhitespaceAndNewlines();
             if ($this->getCurrentToken()->type === Lexer::T_CLOSE_BRACE) {
                 break;
             }
             $items[] = $this->parseStdObjectItem();
-            $this->skipWhitespaceAndNewlines();
         }
 
         $this->consume(Lexer::T_CLOSE_BRACE);
@@ -119,17 +135,21 @@ final class Parser
         return new StdObjectNode($items);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseStdObjectItem(): StdObjectItemNode
     {
         $key = $this->parseStdObjectKey();
-        $this->skipWhitespaceAndNewlines();
         $this->consume(Lexer::T_ARROW);
-        $this->skipWhitespaceAndNewlines();
         $value = $this->parseValue();
 
         return new StdObjectItemNode($key, $value);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseStdObjectKey(): StringNode
     {
         $token = $this->getCurrentToken();
@@ -142,6 +162,9 @@ final class Parser
         throw new ParserException(sprintf('Unexpected std object key token %s on line %d', $token->type, $token->line));
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseObject(): ObjectNode
     {
         $token = $this->consume(Lexer::T_OBJECT);
@@ -149,6 +172,9 @@ final class Parser
         return new ObjectNode($matches[1]);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseResource(): ResourceNode
     {
         $token = $this->consume(Lexer::T_RESOURCE);
@@ -156,6 +182,9 @@ final class Parser
         return new ResourceNode($matches[1]);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseArray(): ListNode|HashmapNode
     {
         $this->consume(Lexer::T_ARRAY);
@@ -163,12 +192,10 @@ final class Parser
 
         $items = [];
         while ($this->getCurrentToken()->type !== Lexer::T_CLOSE_BRACE) {
-            $this->skipWhitespaceAndNewlines();
             if ($this->getCurrentToken()->type === Lexer::T_CLOSE_BRACE) {
                 break;
             }
             $items[] = $this->parseArrayItem();
-            $this->skipWhitespaceAndNewlines();
         }
 
         $this->consume(Lexer::T_CLOSE_BRACE);
@@ -178,17 +205,21 @@ final class Parser
         return $this->tryConvertToListNode($hashmapNode);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseArrayItem(): HashmapItemNode
     {
         $key = $this->parseArrayKey();
-        $this->skipWhitespaceAndNewlines();
         $this->consume(Lexer::T_ARROW);
-        $this->skipWhitespaceAndNewlines();
         $value = $this->parseValue();
 
         return new HashmapItemNode($key, $value);
     }
 
+    /**
+     * @throws ParserException
+     */
     private function parseArrayKey(): IntNode|StringNode
     {
         $token = $this->getCurrentToken();
@@ -227,18 +258,17 @@ final class Parser
         return new ListNode($listItems);
     }
 
-    private function skipWhitespaceAndNewlines(): void
-    {
-        while (in_array($this->getCurrentToken()->type, [Lexer::T_WS, Lexer::T_NEWLINE], true)) {
-            $this->position++;
-        }
-    }
-
     private function getCurrentToken(): Token
     {
         return $this->tokens[$this->position];
     }
 
+    /**
+     * @throws ParserException
+     */
+    /**
+     * @throws ParserException
+     */
     private function consume(string $expectedType): Token
     {
         $token = $this->getCurrentToken();
@@ -249,6 +279,9 @@ final class Parser
         return $token;
     }
 
+    /**
+     * @throws ParserException
+     */
     private function expect(string $expectedType): void
     {
         $token = $this->getCurrentToken();
