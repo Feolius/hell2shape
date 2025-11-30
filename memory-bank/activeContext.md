@@ -1,22 +1,19 @@
 # Active Context
 
 ## Current Focus
-- Initial project setup and scaffolding
-- Memory bank documentation completion
-- Core architecture definition
-- Parser implementation (need to skip all object internals)
+- Parser implementation and testing
 
 ## Recent Decisions
 - Using Lexer/Parser/Generator architecture
 - PHP 8.4+ as minimum version
 - Symfony Console for CLI interface
-- Created Node classes: StringNode, IntNode, BoolNode, FloatNode, NullNode, ListNode, ListItemNode, HashmapNode, HashmapItemNode, StdClassNode, StdClassItemNode, ResourceNode, ObjectNode
+- All Node classes are now `readonly` and `final` for immutability
+- Parser tests refactored to use a data provider and real `var_dump` output
 
 ## Immediate Next Steps
-1. Set up project structure
-2. Initialize composer.json
-3. Create basic Lexer implementation
-4. Add unit test scaffolding
+1. Finalize Parser implementation
+2. Implement Generator component
+3. Create CLI interface
 
 ## Open Questions
 - Specific token types needed for Lexer
