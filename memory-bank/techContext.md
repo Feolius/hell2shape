@@ -9,3 +9,6 @@
 - PHPUnit (unit testing)
 - PHPStan (static analysis)
 - Easy Coding Standard (code formatting)
+
+## Tool Usage Patterns
+- Run dev tools (PHPStan, PHPUnit, ECS) only when specifically requested.
