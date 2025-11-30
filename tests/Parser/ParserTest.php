@@ -37,7 +37,13 @@ final class ParserTest extends TestCase
     public static function dumpProvider(): iterable
     {
         yield 'Simple Hashmap' => [
-            'input' => ['foo' => 'bar', 0 => 42, 'baz' => null, 1 => 4.5, 'gut' => fopen('php://memory', 'r')],
+            'input' => [
+                'foo' => 'bar',
+                0 => 42,
+                'baz' => null,
+                1 => 4.5,
+                'gut' => fopen('php://memory', 'r'),
+            ],
             'expected' => new HashmapNode([
                 new HashmapItemNode(new StringNode('foo'), new StringNode('bar')),
                 new HashmapItemNode(new IntNode(0), new IntNode(42)),
@@ -61,7 +67,8 @@ final class ParserTest extends TestCase
         yield 'Inner array and object' => [
             'input' => [
                 'list' => ['foo', 'bar'],
-                'object' => (object)['foo' => 'bar', 'baz' => 42],
+                'object' => (object)['foo' => 'bar',
+                    'baz' => 42],
             ],
             'expected' => new HashmapNode([
                 new HashmapItemNode(

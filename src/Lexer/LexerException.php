@@ -6,11 +6,11 @@ class LexerException extends \Exception
 {
     private const int TEXT_TRIM_LENGTH = 50;
 
-    private(set) string $text;
+    public private(set) string $text;
 
-    private(set) int $inputLine;
+    public private(set) int $inputLine;
 
-    private(set) int $inputColumn;
+    public private(set) int $inputColumn;
 
     public function __construct(string $text, int $inputLine, int $inputColumn)
     {

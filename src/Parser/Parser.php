@@ -7,9 +7,9 @@ use App\Lexer\Token;
 use App\Parser\Node\AbstractNode;
 use App\Parser\Node\BoolNode;
 use App\Parser\Node\FloatNode;
-use App\Parser\Node\IntNode;
 use App\Parser\Node\HashmapItemNode;
 use App\Parser\Node\HashmapNode;
+use App\Parser\Node\IntNode;
 use App\Parser\Node\ListItemNode;
 use App\Parser\Node\ListNode;
 use App\Parser\Node\NullNode;
@@ -21,8 +21,11 @@ use App\Parser\Node\StringNode;
 
 final class Parser
 {
-    /** @var list<Token> */
+    /**
+     * @var list<Token>
+     */
     private array $tokens;
+
     private int $position = 0;
 
     /**
@@ -34,7 +37,7 @@ final class Parser
         $this->tokens = array_values(array_filter(
             $tokens,
             fn(Token $t) => !in_array($t->type, [Lexer::T_WS, Lexer::T_NEWLINE], true)
-        ));;
+        ));
         $this->position = 0;
 
         $node = $this->parseValue();

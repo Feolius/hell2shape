@@ -4,8 +4,9 @@ namespace App\Parser\Node;
 
 final readonly class StringNode extends AbstractNode
 {
-    public function __construct(public string $value)
-    {
+    public function __construct(
+        public string $value
+    ) {
     }
 
     public function __toString(): string
