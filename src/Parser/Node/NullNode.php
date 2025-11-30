@@ -2,7 +2,7 @@
 
 namespace App\Parser\Node;
 
-class NullNode extends AbstractNode
+final readonly class NullNode extends AbstractNode
 {
     public function __construct()
     {

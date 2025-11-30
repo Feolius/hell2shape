@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class ObjectNode extends AbstractNode
+final readonly class ObjectNode extends AbstractNode
 {
-    public function __construct(private string $className)
+    public function __construct(public string $className)
     {
     }
 

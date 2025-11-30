@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class HashmapItemNode extends AbstractNode
+final readonly class HashmapItemNode extends AbstractNode
 {
-    public function __construct(private IntNode|StringNode $key, private AbstractNode $value)
+    public function __construct(public IntNode|StringNode $key, public AbstractNode $value)
     {
     }
 

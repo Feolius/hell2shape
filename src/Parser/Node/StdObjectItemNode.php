@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class StdObjectItemNode extends AbstractNode
+final readonly class StdObjectItemNode extends AbstractNode
 {
-    public function __construct(private StringNode $key, private AbstractNode $value)
+    public function __construct(public StringNode $key, public AbstractNode $value)
     {
     }
 

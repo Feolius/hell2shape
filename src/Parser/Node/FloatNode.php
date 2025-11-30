@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class FloatNode extends AbstractNode
+final readonly class FloatNode extends AbstractNode
 {
-    public function __construct(private float $value)
+    public function __construct(public float $value)
     {
     }
 

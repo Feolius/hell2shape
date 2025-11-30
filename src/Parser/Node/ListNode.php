@@ -2,12 +2,12 @@
 
 namespace App\Parser\Node;
 
-class ListNode extends AbstractNode
+final readonly class ListNode extends AbstractNode
 {
     /**
      * @param list<ListItemNode> $items
      */
-    public function __construct(private array $items)
+    public function __construct(public array $items)
     {
     }
 

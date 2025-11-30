@@ -2,12 +2,12 @@
 
 namespace App\Parser\Node;
 
-class HashmapNode extends AbstractNode
+final readonly class HashmapNode extends AbstractNode
 {
     /**
      * @param array<HashmapItemNode> $items
      */
-    public function __construct(private array $items)
+    public function __construct(public array $items)
     {
     }
 

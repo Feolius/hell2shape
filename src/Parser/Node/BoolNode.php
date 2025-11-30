@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class BoolNode extends AbstractNode
+final readonly class BoolNode extends AbstractNode
 {
-    public function __construct(private bool $value)
+    public function __construct(public bool $value)
     {
     }
 

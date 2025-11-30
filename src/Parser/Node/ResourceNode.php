@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class ResourceNode extends AbstractNode
+final readonly class ResourceNode extends AbstractNode
 {
-    public function __construct(private string $value)
+    public function __construct(public string $value)
     {
     }
 

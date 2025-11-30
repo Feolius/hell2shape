@@ -2,9 +2,9 @@
 
 namespace App\Parser\Node;
 
-class IntNode extends AbstractNode
+final readonly class IntNode extends AbstractNode
 {
-    public function __construct(private int $value)
+    public function __construct(public int $value)
     {
     }
 
