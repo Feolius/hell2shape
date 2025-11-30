@@ -1,6 +1,6 @@
 <?php
 
-namespace Lexer;
+namespace App\Tests\Lexer;
 
 use App\Lexer\Lexer;
 use App\Lexer\Token;

@@ -4,7 +4,7 @@
 - Initial project setup and scaffolding
 - Memory bank documentation completion
 - Core architecture definition
-- Parser implementation
+- Parser implementation (need to skip all object internals)
 
 ## Recent Decisions
 - Using Lexer/Parser/Generator architecture
