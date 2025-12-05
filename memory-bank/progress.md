@@ -5,10 +5,11 @@
 - Technology stack selected
 - Core architecture designed
 - Memory bank documentation created
-
-## Completed
 - Lexer component implementation
-- Parser component implementation
+- Parser component implementation with full object support:
+  - Regular objects (extracts class name only)
+  - Anonymous objects (dedicated AnonymousObjectNode)
+  - Proper handling of nested objects via brace counting
 - Unit tests for Parser with real `var_dump` output
 
 ## In Progress

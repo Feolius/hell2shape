@@ -10,6 +10,10 @@
    - Processes token stream from Lexer
    - Builds Abstract Syntax Tree (AST) representation
    - Handles nested structures and relationships
+   - Object parsing strategy:
+     * Regular objects: Extract class name only, skip internals
+     * Anonymous objects: Use dedicated AnonymousObjectNode
+     * Brace counting mechanism to handle nested objects correctly
 
 3. Generator:
    - Transforms AST into PHPStan-compatible type annotations
