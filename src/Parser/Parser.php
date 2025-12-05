@@ -5,6 +5,7 @@ namespace App\Parser;
 use App\Lexer\Lexer;
 use App\Lexer\Token;
 use App\Parser\Node\AbstractNode;
+use App\Parser\Node\AnonymousObjectNode;
 use App\Parser\Node\BoolNode;
 use App\Parser\Node\FloatNode;
 use App\Parser\Node\HashmapItemNode;
@@ -63,6 +64,7 @@ final class Parser
             Lexer::T_ARRAY => $this->parseArray(),
             Lexer::T_STD_OBJECT => $this->parseStdObject(),
             Lexer::T_OBJECT => $this->parseObject(),
+            Lexer::T_ANONYMOUS_OBJECT => $this->parseAnonymousObject(),
             Lexer::T_RESOURCE => $this->parseResource(),
             default => throw new ParserException(sprintf('Unexpected token %s on line %d', $token->type, $token->line)),
         };
@@ -171,8 +173,50 @@ final class Parser
     private function parseObject(): ObjectNode
     {
         $token = $this->consume(Lexer::T_OBJECT);
-        preg_match('/object\((\w+)\)/', $token->value, $matches);
-        return new ObjectNode($matches[1]);
+        preg_match('/object\(([\w\\\\]+)\)/', $token->value, $matches);
+        $className = $matches[1];
+
+        $this->skipObjectInternals();
+
+        return new ObjectNode($className);
+    }
+
+    /**
+     * @throws ParserException
+     */
+    private function parseAnonymousObject(): AnonymousObjectNode
+    {
+        $this->consume(Lexer::T_ANONYMOUS_OBJECT);
+        
+        $this->skipObjectInternals();
+
+        return new AnonymousObjectNode();
+    }
+
+    /**
+     * Skip object internals by counting braces
+     * @throws ParserException
+     */
+    private function skipObjectInternals(): void
+    {
+        $this->consume(Lexer::T_OPEN_BRACE);
+        $braceDepth = 1;
+
+        while ($braceDepth > 0) {
+            $currentToken = $this->getCurrentToken();
+            
+            if ($currentToken->type === Lexer::T_OPEN_BRACE) {
+                $braceDepth++;
+            } elseif ($currentToken->type === Lexer::T_CLOSE_BRACE) {
+                $braceDepth--;
+            }
+            
+            if ($braceDepth > 0) {
+                $this->position++;
+            }
+        }
+
+        $this->consume(Lexer::T_CLOSE_BRACE);
     }
 
     /**

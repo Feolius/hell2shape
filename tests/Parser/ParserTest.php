@@ -4,6 +4,7 @@ namespace App\Tests\Parser;
 
 use App\Lexer\Lexer;
 use App\Parser\Node\AbstractNode;
+use App\Parser\Node\AnonymousObjectNode;
 use App\Parser\Node\FloatNode;
 use App\Parser\Node\HashmapItemNode;
 use App\Parser\Node\HashmapNode;
@@ -11,6 +12,7 @@ use App\Parser\Node\IntNode;
 use App\Parser\Node\ListItemNode;
 use App\Parser\Node\ListNode;
 use App\Parser\Node\NullNode;
+use App\Parser\Node\ObjectNode;
 use App\Parser\Node\ResourceNode;
 use App\Parser\Node\StdObjectItemNode;
 use App\Parser\Node\StdObjectNode;
@@ -19,6 +21,27 @@ use App\Parser\Parser;
 use App\Tests\VarDumper;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
+class A
+{
+    public string $prop;
+    private readonly int $интProp;
+    private $obj;
+    private \stdClass $obj2;
+
+    public function __construct(
+        protected int $prop2
+    ) {
+        $this->интProp = PHP_INT_MAX;
+        $this->obj = new class {
+            private string $test = 'sfsd';
+        };
+        $obj2 = new \stdClass();
+        $obj2->prop1 = 5;
+        $obj2->prop2 = [1];
+        $this->obj2 = $obj2;
+    }
+}
 
 final class ParserTest extends TestCase
 {
@@ -64,7 +87,7 @@ final class ParserTest extends TestCase
             ]),
         ];
 
-        yield 'Inner array and object' => [
+        yield 'Inner array and std object' => [
             'input' => [
                 'list' => ['foo', 'bar'],
                 'object' => (object)['foo' => 'bar',
@@ -86,6 +109,39 @@ final class ParserTest extends TestCase
                     ])
                 ),
             ]),
+        ];
+
+        yield 'Array and object' => [
+            'input' => [
+                'foo' => new A(23),
+            ],
+            'expected' => new HashmapNode([
+                new HashmapItemNode(
+                    new StringNode('foo'),
+                    new ObjectNode(A::class),
+                )
+            ])
+        ];
+
+        yield 'Nested anonymous objects' => [
+            'input' => [
+                'anon' => new class {
+                    private string $test = 'value';
+                    private object $nested;
+                    
+                    public function __construct() {
+                        $this->nested = new class {
+                            private string $inner = 'nested';
+                        };
+                    }
+                },
+            ],
+            'expected' => new HashmapNode([
+                new HashmapItemNode(
+                    new StringNode('anon'),
+                    new AnonymousObjectNode(),
+                )
+            ])
         ];
     }
 }
