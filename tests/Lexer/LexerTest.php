@@ -4,9 +4,55 @@ namespace App\Tests\Lexer;
 
 use App\Lexer\Lexer;
 use App\Lexer\Token;
+use App\Tests\VarDumper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
+class A
+{
+    public string $prop;
+    private readonly int $интProp;
+    private $obj;
+
+    public function __construct(
+        protected int $prop2
+    ) {
+        $this->интProp = PHP_INT_MAX;
+        $this->obj = new class {
+            private string $test = 'sfsd';
+        };
+    }
+}
+
+class BBвап
+{
+    private string $prop;
+    public $pubProp;
+    protected A $a;
+    private readonly string $strProp;
+
+    public function __construct()
+    {
+        $this->prop = 'bb';
+    }
+
+    public function getProp(): int
+    {
+        return $this->prop;
+
+    }
+}
+
+class Inherited extends BBвап
+{
+    public function __construct(A $a)
+    {
+        parent::__construct();
+        $this->a = $a;
+    }
+
+}
 
 #[CoversClass(\App\Lexer\Lexer::class)]
 class LexerTest extends TestCase
@@ -68,87 +114,32 @@ END;
 
     public function testComplexArray(): void
     {
-        $input = <<<'END'
-array(14) {
-  ["a"]=>
-  object(Playground\A)#1 (3) {
-    ["prop"]=>
-    string(4) "prop"
-    ["интProp":"Playground\A":private]=>
-    int(9223372036854775807)
-    ["prop2":protected]=>
-    int(5)
-  }
-  [5]=>
-  int(5)
-  ["resource"]=>
-  resource(5) of type (stream)
-  ["test_int"]=>
-  int(5)
-  ["test_float"]=>
-  float(7.999999999999999)
-  ["test_arr"]=>
-  array(3) {
-    [0]=>
-    int(1)
-    [2]=>
-    int(3)
-    [3]=>
-    object(Playground\BBвап)#2 (2) {
-      ["prop":"Playground\BBвап":private]=>
-      string(2) "bb"
-      ["pubProp"]=>
-      NULL
-      ["a":protected]=>
-      uninitialized(Playground\A)
-      ["strProp":"Playground\BBвап":private]=>
-      uninitialized(string)
-    }
-  }
-  ["empty_array"]=>
-  array(0) {
-  }
-  ["test_std"]=>
-  object(stdClass)#4 (2) {
-    ["prop"]=>
-    int(5)
-    ["prop2"]=>
-    object(Playground\Inherited)#3 (3) {
-      ["prop":"Playground\BBвап":private]=>
-      string(2) "bb"
-      ["pubProp"]=>
-      NULL
-      ["a":protected]=>
-      object(Playground\A)#1 (3) {
-        ["prop"]=>
-        string(4) "prop"
-        ["интProp":"Playground\A":private]=>
-        int(9223372036854775807)
-        ["prop2":protected]=>
-        int(5)
-      }
-      ["strProp":"Playground\BBвап":private]=>
-      uninitialized(string)
-    }
-  }
-  ["test_obj"]=>
-  object(stdClass)#5 (1) {
-    ["scalar"]=>
-    string(4) "gdfg"
-  }
-  ["test_bool"]=>
-  bool(true)
-  ["test_null"]=>
-  NULL
-  ["test_false"]=>
-  bool(false)
-  ["test_true"]=>
-  bool(true)
-  ["test_string"]=>
-  string(10) "bal
-dfgdfg"
-}
-END;
+        $a = new A(5);
+        $b = new BBвап();
+        $testArr = [1, 2, 3, $b];
+        unset($testArr[1]);
+        $inh = new Inherited($a);
+
+        $stdObj = new \stdClass();
+        $stdObj->prop = 5;
+        $stdObj->prop2 = $inh;
+        $f = fopen("php://stdin", "r");
+        $input = VarDumper::dump([
+            'a' => $a,
+            5 => 5,
+            'resource' => $f,
+            'test_int' => 5,
+            'test_float' => 7.9999999999999991118,
+            'test_arr' => $testArr,
+            'empty_array' => [],
+            'test_std' => $stdObj,
+            'test_obj' => (object) "gdfg",
+            'test_bool' => true,
+            'test_null' => null,
+            'test_false' => false,
+            'test_true' => true,
+            "test_string" => "bal\ndfgdfg",
+        ]);
         $lexer = new Lexer();
         $tokens = $lexer->tokenize($input);
         $last = array_last($tokens);

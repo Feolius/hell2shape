@@ -36,6 +36,8 @@ final class Lexer
 
     public const string T_RESOURCE = 'resource';
 
+    public const string T_ANONYMOUS_OBJECT = 'anonymous_object';
+
     public const string T_OBJECT = 'object';
 
     public const string T_NEWLINE = 'newline';
@@ -104,12 +106,13 @@ final class Lexer
             self::T_ARROW => '=>',
             self::T_STRING_KEY => '\[\"[a-zA-Z0-9_]+\"\]',
             self::T_PROTECTED_PROP => '\["\w+":protected\]',
-            self::T_PRIVATE_PROP => '\["\w+":"[\w\\\\]+":private\]',
+            self::T_PRIVATE_PROP => '\["\w+":"[\w\\\\|class@anonymous]+":private\]',
             self::T_INT_KEY => '\[\d+\]',
             self::T_OPEN_BRACE => '\{',
             self::T_CLOSE_BRACE => '\}',
             self::T_STD_OBJECT => 'object\(stdClass\)#\d+ \(\d+\)',
             self::T_RESOURCE => 'resource\(\d+\) of type \(\w+\)',
+            self::T_ANONYMOUS_OBJECT => 'object\(class@anonymous\)#\d+ \(\d+\)',
             self::T_OBJECT => 'object\([\w\\\\]+\)#\d+ \(\d+\)',
             self::T_NEWLINE => '\\r?+\\n',
             self::T_WS => '[ \t]++',
