@@ -187,7 +187,7 @@ final class Parser
     private function parseAnonymousObject(): AnonymousObjectNode
     {
         $this->consume(Lexer::T_ANONYMOUS_OBJECT);
-        
+
         $this->skipObjectInternals();
 
         return new AnonymousObjectNode();
@@ -204,13 +204,13 @@ final class Parser
 
         while ($braceDepth > 0) {
             $currentToken = $this->getCurrentToken();
-            
+
             if ($currentToken->type === Lexer::T_OPEN_BRACE) {
                 $braceDepth++;
             } elseif ($currentToken->type === Lexer::T_CLOSE_BRACE) {
                 $braceDepth--;
             }
-            
+
             if ($braceDepth > 0) {
                 $this->position++;
             }

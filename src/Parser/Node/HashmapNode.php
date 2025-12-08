@@ -2,6 +2,8 @@
 
 namespace App\Parser\Node;
 
+use App\Generator\TypeGeneratorVisitor;
+
 final readonly class HashmapNode extends AbstractNode
 {
     /**
@@ -20,5 +22,10 @@ final readonly class HashmapNode extends AbstractNode
         }
 
         return '{'.implode(', ', $items).'}';
+    }
+
+    public function accept(TypeGeneratorVisitor $visitor): string
+    {
+        return $visitor->visitHashmap($this);
     }
 }

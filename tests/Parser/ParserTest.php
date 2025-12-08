@@ -25,15 +25,18 @@ use PHPUnit\Framework\TestCase;
 class A
 {
     public string $prop;
+
     private readonly int $интProp;
+
     private $obj;
+
     private \stdClass $obj2;
 
     public function __construct(
         protected int $prop2
     ) {
         $this->интProp = PHP_INT_MAX;
-        $this->obj = new class {
+        $this->obj = new class() {
             private string $test = 'sfsd';
         };
         $obj2 = new \stdClass();
@@ -119,18 +122,20 @@ final class ParserTest extends TestCase
                 new HashmapItemNode(
                     new StringNode('foo'),
                     new ObjectNode(A::class),
-                )
-            ])
+                ),
+            ]),
         ];
 
         yield 'Nested anonymous objects' => [
             'input' => [
-                'anon' => new class {
+                'anon' => new class() {
                     private string $test = 'value';
+
                     private object $nested;
-                    
-                    public function __construct() {
-                        $this->nested = new class {
+
+                    public function __construct()
+                    {
+                        $this->nested = new class() {
                             private string $inner = 'nested';
                         };
                     }
@@ -140,8 +145,8 @@ final class ParserTest extends TestCase
                 new HashmapItemNode(
                     new StringNode('anon'),
                     new AnonymousObjectNode(),
-                )
-            ])
+                ),
+            ]),
         ];
     }
 }

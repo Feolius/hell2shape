@@ -12,14 +12,16 @@ use PHPUnit\Framework\TestCase;
 class A
 {
     public string $prop;
+
     private readonly int $интProp;
+
     private $obj;
 
     public function __construct(
         protected int $prop2
     ) {
         $this->интProp = PHP_INT_MAX;
-        $this->obj = new class {
+        $this->obj = new class() {
             private string $test = 'sfsd';
         };
     }
@@ -28,8 +30,11 @@ class A
 class BBвап
 {
     private string $prop;
+
     public $pubProp;
+
     protected A $a;
+
     private readonly string $strProp;
 
     public function __construct()
@@ -46,12 +51,12 @@ class BBвап
 
 class Inherited extends BBвап
 {
-    public function __construct(A $a)
-    {
+    public function __construct(
+        A $a
+    ) {
         parent::__construct();
         $this->a = $a;
     }
-
 }
 
 #[CoversClass(\App\Lexer\Lexer::class)]
@@ -133,7 +138,7 @@ END;
             'test_arr' => $testArr,
             'empty_array' => [],
             'test_std' => $stdObj,
-            'test_obj' => (object) "gdfg",
+            'test_obj' => (object)"gdfg",
             'test_bool' => true,
             'test_null' => null,
             'test_false' => false,
