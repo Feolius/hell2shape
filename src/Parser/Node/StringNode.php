@@ -2,8 +2,6 @@
 
 namespace App\Parser\Node;
 
-use App\Generator\TypeGeneratorVisitor;
-
 final readonly class StringNode extends AbstractNode
 {
     public function __construct(
@@ -16,7 +14,7 @@ final readonly class StringNode extends AbstractNode
         return $this->value;
     }
 
-    public function accept(TypeGeneratorVisitor $visitor): string
+    public function accept(NodeVisitorInterface $visitor): mixed
     {
         return $visitor->visitString($this);
     }

@@ -2,8 +2,6 @@
 
 namespace App\Parser\Node;
 
-use App\Generator\TypeGeneratorVisitor;
-
 final readonly class AnonymousObjectNode extends AbstractNode
 {
     public function __construct()
@@ -15,7 +13,7 @@ final readonly class AnonymousObjectNode extends AbstractNode
         return 'object(anonymous)';
     }
 
-    public function accept(TypeGeneratorVisitor $visitor): string
+    public function accept(NodeVisitorInterface $visitor): mixed
     {
         return $visitor->visitAnonymousObject($this);
     }

@@ -9,6 +9,7 @@ use App\Parser\Node\HashmapItemNode;
 use App\Parser\Node\HashmapNode;
 use App\Parser\Node\IntNode;
 use App\Parser\Node\ListNode;
+use App\Parser\Node\NodeVisitorInterface;
 use App\Parser\Node\NullNode;
 use App\Parser\Node\ObjectNode;
 use App\Parser\Node\ResourceNode;
@@ -16,7 +17,12 @@ use App\Parser\Node\StdObjectItemNode;
 use App\Parser\Node\StdObjectNode;
 use App\Parser\Node\StringNode;
 
-final class TypeGeneratorVisitor
+/**
+ * Visitor that generates PHPStan type annotations from AST nodes.
+ *
+ * @implements NodeVisitorInterface<string>
+ */
+final class TypeGeneratorVisitor implements NodeVisitorInterface
 {
     public function __construct(
         private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,

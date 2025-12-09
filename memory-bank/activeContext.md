@@ -9,6 +9,7 @@
 - PHP 8.4+ as minimum version
 - Symfony Console for CLI interface
 - All Node classes are now `readonly` and `final` for immutability
+- Generic visitor pattern with NodeVisitorInterface<R> for extensibility
 - Visitor pattern with double dispatch for Generator
 - KeyQuotingStyle enum for array shape key formatting (NoQuotes, SingleQuotes, DoubleQuotes)
 - List union type threshold: max 3 types before falling back to `list<mixed>`
@@ -16,14 +17,12 @@
 - StdObject generates `object{...}` syntax (not `array{...}`)
 
 ## Recent Changes
-- Implemented Generator component with Visitor pattern
-- Added abstract `accept()` method to AbstractNode
-- Implemented `accept()` in all 14 Node classes for double dispatch
-- Created TypeGeneratorVisitor with visit methods for each node type
-- Created KeyQuotingStyle enum for configurable key quoting
-- Created Generator entry point class
-- Added comprehensive test suite (24 tests, all passing)
-- Total test coverage: 33 tests (9 Lexer + 24 Generator)
+- Refactored visitor pattern to use generic NodeVisitorInterface<R>
+- Created NodeVisitorInterface in Parser namespace for proper separation of concerns
+- Updated AbstractNode to accept generic NodeVisitorInterface instead of concrete TypeGeneratorVisitor
+- Updated TypeGeneratorVisitor to implement NodeVisitorInterface<string>
+- Updated all 14 Node classes to use generic visitor interface
+- All tests passing (33 tests, 44 assertions)
 
 ## Generator Implementation Details
 - **Scalar types**: Direct mapping (bool, int, float, string, null, resource)

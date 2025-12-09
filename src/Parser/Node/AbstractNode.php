@@ -2,11 +2,16 @@
 
 namespace App\Parser\Node;
 
-use App\Generator\TypeGeneratorVisitor;
-
 abstract readonly class AbstractNode
 {
     abstract public function __toString(): string;
 
-    abstract public function accept(TypeGeneratorVisitor $visitor): string;
+    /**
+     * Accept a visitor to traverse this node.
+     *
+     * @template R
+     * @param NodeVisitorInterface<R> $visitor
+     * @return R
+     */
+    abstract public function accept(NodeVisitorInterface $visitor): mixed;
 }

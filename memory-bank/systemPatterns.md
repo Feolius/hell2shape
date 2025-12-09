@@ -33,7 +33,7 @@
 ## Data Flow
 1. var_dump → Lexer → Parser → Generator → type annotation
 2. Each component handles its own error cases
-3. AST nodes implement accept() for visitor pattern
+3. AST nodes implement accept() for generic visitor pattern
 
 ## Key Design Decisions
 - Strict separation of lexical analysis, parsing and generation
@@ -45,8 +45,22 @@
 - Extensible architecture for future type system improvements
 
 ## Node Hierarchy
-- AbstractNode (abstract base with accept() method)
+- AbstractNode (abstract base with generic accept() method)
   - Scalar nodes: BoolNode, IntNode, FloatNode, StringNode, NullNode
   - Special nodes: ResourceNode, ObjectNode, AnonymousObjectNode
   - Container nodes: ListNode, HashmapNode, StdObjectNode
   - Item nodes: ListItemNode, HashmapItemNode, StdObjectItemNode
+
+## Visitor Pattern Architecture
+- **NodeVisitorInterface<R>**: Generic visitor interface in Parser namespace
+  - Template parameter R defines the return type of visit methods
+  - All visit methods return mixed (actual type determined by R)
+  - Enables different visitor implementations with different return types
+- **TypeGeneratorVisitor**: Implements NodeVisitorInterface<string>
+  - Generates PHPStan type annotations from AST nodes
+  - Returns string type for all visit methods
+- **Benefits**:
+  - Decoupling: Parser namespace independent of Generator namespace
+  - Extensibility: New visitors can be created without modifying nodes
+  - Type safety: Generic R parameter ensures type consistency
+  - Flexibility: Different visitors can return different types
