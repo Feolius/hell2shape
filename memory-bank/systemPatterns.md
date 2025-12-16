@@ -16,19 +16,22 @@
      * Brace counting mechanism to handle nested objects correctly
 
 3. Generator:
-   - Transforms AST into PHPStan-compatible type annotations
-   - Uses Visitor pattern with double dispatch
-   - TypeGeneratorVisitor with methods for each node type
+   - Two-phase generation: AST → Type IR → String
+   - **Phase 1**: TypeGeneratorVisitor converts AST to Type IR (TypeInterface)
+   - **Phase 2**: Type IR toString() generates PHPStan type annotations
    - Configurable options:
      * KeyQuotingStyle: NoQuotes, SingleQuotes, DoubleQuotes
-     * maxListUnionTypes: Threshold for list union types (default 3)
-   - Type generation rules:
-     * Scalars: Direct mapping (bool, int, float, string, null, resource)
-     * Objects: Class name or "object" for anonymous
-     * Hashmaps: `array{key: type, ...}` with configurable key quoting
-     * StdObjects: `object{key: type, ...}` syntax
-     * Lists: Smart union handling (1 type → `list<T>`, 2-3 → `list<T1|T2|T3>`, >3 → `list<mixed>`)
-     * Empty arrays: `array` (generic type)
+   - **Type IR System**:
+     * TypeInterface: Base interface with merge() and toString()
+     * ScalarType: Non-mergeable types (int, string, bool, etc.)
+     * UnionType: Automatic deduplication of union members
+     * HashmapType: Mergeable array shapes with optional key support
+     * StdObjectType: Mergeable stdClass objects
+     * ListType: Contains element type (can be merged or union)
+   - **Merging Logic**:
+     * Hashmaps/StdObjects: Missing keys become optional (?), different types create unions
+     * Recursive merging for nested structures
+     * Non-hashmap types create unions when merged
 
 ## Data Flow
 1. var_dump → Lexer → Parser → Generator → type annotation

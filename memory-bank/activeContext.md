@@ -1,8 +1,9 @@
 # Active Context
 
 ## Current Focus
-- Generator implementation complete
-- Ready to move to CLI interface
+- Intermediate Type IR system implemented
+- Hashmap merging functionality working (27/28 tests passing)
+- One edge case remaining: mixed lists with hashmaps need grouping logic
 
 ## Recent Decisions
 - Using Lexer/Parser/Generator architecture
@@ -10,27 +11,33 @@
 - Symfony Console for CLI interface
 - All Node classes are now `readonly` and `final` for immutability
 - Generic visitor pattern with NodeVisitorInterface<R> for extensibility
-- Visitor pattern with double dispatch for Generator
+- **Intermediate Type IR system** for mergeable type representations
 - KeyQuotingStyle enum for array shape key formatting (NoQuotes, SingleQuotes, DoubleQuotes)
-- List union type threshold: max 3 types before falling back to `list<mixed>`
+- **Removed maxListUnionTypes threshold** - all union types shown
 - Empty arrays generate `array` type (not `list<mixed>`)
 - StdObject generates `object{...}` syntax (not `array{...}`)
 
 ## Recent Changes
-- Refactored visitor pattern to use generic NodeVisitorInterface<R>
-- Created NodeVisitorInterface in Parser namespace for proper separation of concerns
-- Updated AbstractNode to accept generic NodeVisitorInterface instead of concrete TypeGeneratorVisitor
-- Updated TypeGeneratorVisitor to implement NodeVisitorInterface<string>
-- Updated all 14 Node classes to use generic visitor interface
-- All tests passing (33 tests, 44 assertions)
+- Implemented intermediate Type IR system (TypeInterface hierarchy)
+- Created mergeable type classes: HashmapType, StdObjectType, UnionType, ListType, ScalarType
+- Updated TypeGeneratorVisitor to return TypeInterface instead of strings
+- Updated Generator to convert Type IR to strings via toString()
+- Hashmap merging logic:
+  - Missing keys become optional (?)
+  - Different types for same key create unions
+  - Recursive merging for nested hashmaps
+- Removed maxListUnionTypes threshold from tests
+- Added comprehensive hashmap merging tests
 
-## Generator Implementation Details
-- **Scalar types**: Direct mapping (bool, int, float, string, null, resource)
-- **Objects**: Class name for regular objects, "object" for anonymous
-- **Hashmaps**: `array{key: type, ...}` with configurable key quoting
-- **StdObjects**: `object{key: type, ...}` syntax
-- **Lists**: Smart union handling with threshold (1 type → `list<T>`, 2-3 types → `list<T1|T2|T3>`, >3 → `list<mixed>`)
-- **Empty arrays**: `array` (generic type)
+## Type IR Architecture
+- **Two-phase generation**: AST → Type IR → String
+- **TypeInterface**: Base interface with merge() and toString() methods
+- **ScalarType**: Non-mergeable types (creates unions when merged)
+- **UnionType**: Automatic deduplication of union members
+- **HashmapType**: Mergeable array shapes with optional key support
+- **StdObjectType**: Mergeable stdClass objects (same logic as HashmapType)
+- **ListType**: Contains element type (can be merged or union)
+- **HashmapKey**: Represents individual keys with optional flag
 
 ## Immediate Next Steps
 1. Create CLI interface with Symfony Console

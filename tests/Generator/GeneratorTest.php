@@ -15,12 +15,11 @@ final class GeneratorTest extends TestCase
     public function testTypeGeneration(
         string $varDumpOutput,
         string $expectedType,
-        KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,
-        int $maxListUnionTypes = 3
+        KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes
     ): void {
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator($keyQuotingStyle, $maxListUnionTypes);
+        $generator = new Generator($keyQuotingStyle);
 
         $tokens = $lexer->tokenize($varDumpOutput);
         $ast = $parser->parse($tokens);
@@ -110,7 +109,7 @@ final class GeneratorTest extends TestCase
                 'list<int|string|float>',
             ],
 
-            // List exceeding threshold
+            // List with 4 types (no threshold anymore, all types shown)
             'list with 4 types' => [
                 'array(4) {
   [0]=>
@@ -122,7 +121,7 @@ final class GeneratorTest extends TestCase
   [3]=>
   bool(true)
 }',
-                'list<mixed>',
+                'list<int|string|float|bool>',
             ],
 
             // Empty array
@@ -271,17 +270,105 @@ final class GeneratorTest extends TestCase
                 'array{users: list<array{id: int, tags: list<string>}>, count: int, active: bool}',
             ],
 
-            // Custom max union types
-            'list with custom threshold' => [
+            // Hashmap merging tests
+            'list with hashmaps - missing key becomes optional' => [
                 'array(2) {
   [0]=>
-  int(1)
+  array(2) {
+    ["k1"]=>
+    string(5) "hello"
+    ["k2"]=>
+    int(42)
+  }
+  [1]=>
+  array(1) {
+    ["k1"]=>
+    string(5) "world"
+  }
+}',
+                'list<array{k1: string, k2?: int}>',
+            ],
+
+            'list with hashmaps - different types create union' => [
+                'array(2) {
+  [0]=>
+  array(1) {
+    ["k1"]=>
+    string(5) "hello"
+  }
+  [1]=>
+  array(1) {
+    ["k1"]=>
+    int(42)
+  }
+}',
+                'list<array{k1: string|int}>',
+            ],
+
+            'list with hashmaps - nested hashmap merging' => [
+                'array(2) {
+  [0]=>
+  array(2) {
+    ["a"]=>
+    int(1)
+    ["b"]=>
+    array(1) {
+      ["x"]=>
+      string(2) "hi"
+    }
+  }
+  [1]=>
+  array(2) {
+    ["a"]=>
+    int(2)
+    ["b"]=>
+    array(1) {
+      ["y"]=>
+      int(5)
+    }
+  }
+}',
+                'list<array{a: int, b: array{x?: string, y?: int}}>',
+            ],
+
+            'list with mixed types - hashmaps merge, scalars create union' => [
+                'array(4) {
+  [0]=>
+  array(2) {
+    ["a"]=>
+    int(1)
+    ["b"]=>
+    int(2)
+  }
   [1]=>
   string(5) "hello"
+  [2]=>
+  array(1) {
+    ["a"]=>
+    int(3)
+  }
+  [3]=>
+  int(42)
 }',
-                'list<mixed>',
-                KeyQuotingStyle::NoQuotes,
-                1, // maxListUnionTypes = 1
+                'list<array{a: int, b?: int}|string|int>',
+            ],
+
+            'list with stdObjects - merging works' => [
+                'array(2) {
+  [0]=>
+  object(stdClass)#1 (2) {
+    ["k1"]=>
+    string(5) "hello"
+    ["k2"]=>
+    int(42)
+  }
+  [1]=>
+  object(stdClass)#2 (1) {
+    ["k1"]=>
+    string(5) "world"
+  }
+}',
+                'list<object{k1: string, k2?: int}>',
             ],
         ];
     }

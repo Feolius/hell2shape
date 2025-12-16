@@ -2,6 +2,11 @@
 
 namespace App\Generator;
 
+use App\Generator\Type\HashmapType;
+use App\Generator\Type\ListType;
+use App\Generator\Type\ScalarType;
+use App\Generator\Type\StdObjectType;
+use App\Generator\Type\TypeInterface;
 use App\Parser\Node\AnonymousObjectNode;
 use App\Parser\Node\BoolNode;
 use App\Parser\Node\FloatNode;
@@ -18,136 +23,104 @@ use App\Parser\Node\StdObjectNode;
 use App\Parser\Node\StringNode;
 
 /**
- * Visitor that generates PHPStan type annotations from AST nodes.
+ * Visitor that generates Type IR from AST nodes.
  *
- * @implements NodeVisitorInterface<string>
+ * @implements NodeVisitorInterface<TypeInterface>
  */
 final class TypeGeneratorVisitor implements NodeVisitorInterface
 {
-    public function __construct(
-        private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,
-        private readonly int $maxListUnionTypes = 3
-    ) {
-    }
-
-    public function visitBool(BoolNode $node): string
+    public function visitBool(BoolNode $node): TypeInterface
     {
-        return 'bool';
+        return new ScalarType('bool');
     }
 
-    public function visitInt(IntNode $node): string
+    public function visitInt(IntNode $node): TypeInterface
     {
-        return 'int';
+        return new ScalarType('int');
     }
 
-    public function visitFloat(FloatNode $node): string
+    public function visitFloat(FloatNode $node): TypeInterface
     {
-        return 'float';
+        return new ScalarType('float');
     }
 
-    public function visitString(StringNode $node): string
+    public function visitString(StringNode $node): TypeInterface
     {
-        return 'string';
+        return new ScalarType('string');
     }
 
-    public function visitNull(NullNode $node): string
+    public function visitNull(NullNode $node): TypeInterface
     {
-        return 'null';
+        return new ScalarType('null');
     }
 
-    public function visitResource(ResourceNode $node): string
+    public function visitResource(ResourceNode $node): TypeInterface
     {
-        return 'resource';
+        return new ScalarType('resource');
     }
 
-    public function visitObject(ObjectNode $node): string
+    public function visitObject(ObjectNode $node): TypeInterface
     {
-        return $node->className;
+        return new ScalarType($node->className);
     }
 
-    public function visitAnonymousObject(AnonymousObjectNode $node): string
+    public function visitAnonymousObject(AnonymousObjectNode $node): TypeInterface
     {
-        return 'object';
+        return new ScalarType('object');
     }
 
-    public function visitHashmap(HashmapNode $node): string
-    {
-        // Empty arrays are treated as generic array type
-        if (empty($node->items)) {
-            return 'array';
-        }
-
-        $items = [];
-        foreach ($node->items as $item) {
-            $items[] = $item->accept($this);
-        }
-
-        return 'array{'.implode(', ', $items).'}';
-    }
-
-    public function visitHashmapItem(HashmapItemNode $node): string
-    {
-        $key = $this->formatKey($node->key);
-        $type = $node->value->accept($this);
-        return "$key: $type";
-    }
-
-    public function visitStdObject(StdObjectNode $node): string
-    {
-        $items = [];
-        foreach ($node->items as $item) {
-            $items[] = $item->accept($this);
-        }
-
-        return 'object{'.implode(', ', $items).'}';
-    }
-
-    public function visitStdObjectItem(StdObjectItemNode $node): string
-    {
-        $key = $this->formatKey($node->key);
-        $type = $node->value->accept($this);
-        return "$key: $type";
-    }
-
-    public function visitList(ListNode $node): string
+    public function visitHashmap(HashmapNode $node): TypeInterface
     {
         if (empty($node->items)) {
-            return 'list<mixed>';
+            return new ScalarType('array');
         }
 
-        // Collect unique types
-        $types = [];
+        $hashmap = new HashmapType();
         foreach ($node->items as $item) {
-            $type = $item->value->accept($this);
-            $types[$type] = true; // Use array key for deduplication
+            $keyName = (string)$item->key;
+            $valueType = $item->value->accept($this);
+            $hashmap->addKey($keyName, $valueType);
         }
 
-        $uniqueTypes = array_keys($types);
-        $typeCount = count($uniqueTypes);
-
-        if ($typeCount === 1) {
-            return 'list<'.$uniqueTypes[0].'>';
-        }
-
-        if ($typeCount <= $this->maxListUnionTypes) {
-            return 'list<'.implode('|', $uniqueTypes).'>';
-        }
-
-        return 'list<mixed>';
+        return $hashmap;
     }
 
-    private function formatKey(IntNode|StringNode $key): string
+    public function visitHashmapItem(HashmapItemNode $node): TypeInterface
     {
-        $keyValue = (string)$key;
+        return $node->value->accept($this);
+    }
 
-        if ($key instanceof StringNode) {
-            return match ($this->keyQuotingStyle) {
-                KeyQuotingStyle::SingleQuotes => "'".$keyValue."'",
-                KeyQuotingStyle::DoubleQuotes => '"'.$keyValue.'"',
-                KeyQuotingStyle::NoQuotes => $keyValue,
-            };
+    public function visitStdObject(StdObjectNode $node): TypeInterface
+    {
+        $stdObject = new StdObjectType();
+        foreach ($node->items as $item) {
+            $keyName = (string)$item->key;
+            $valueType = $item->value->accept($this);
+            $stdObject->addKey($keyName, $valueType);
         }
 
-        return $keyValue;
+        return $stdObject;
+    }
+
+    public function visitStdObjectItem(StdObjectItemNode $node): TypeInterface
+    {
+        return $node->value->accept($this);
+    }
+
+    public function visitList(ListNode $node): TypeInterface
+    {
+        if (empty($node->items)) {
+            return new ScalarType('array');
+        }
+
+        $mergedType = null;
+        foreach ($node->items as $item) {
+            $itemType = $item->value->accept($this);
+            $mergedType = $mergedType === null
+                ? $itemType
+                : $mergedType->merge($itemType);
+        }
+
+        return new ListType($mergedType);
     }
 }

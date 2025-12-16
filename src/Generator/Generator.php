@@ -7,14 +7,14 @@ use App\Parser\Node\AbstractNode;
 final class Generator
 {
     public function __construct(
-        private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,
-        private readonly int $maxListUnionTypes = 3
+        private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes
     ) {
     }
 
     public function generate(AbstractNode $node): string
     {
-        $visitor = new TypeGeneratorVisitor($this->keyQuotingStyle, $this->maxListUnionTypes);
-        return $node->accept($visitor);
+        $visitor = new TypeGeneratorVisitor();
+        $typeIR = $node->accept($visitor);
+        return $typeIR->toString($this->keyQuotingStyle);
     }
 }

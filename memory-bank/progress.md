@@ -11,15 +11,17 @@
   - Anonymous objects (dedicated AnonymousObjectNode)
   - Proper handling of nested objects via brace counting
   - Unit tests for Parser with real `var_dump` output
-- Generator component implementation (24 tests passing):
-  - Visitor pattern with double dispatch
-  - TypeGeneratorVisitor with methods for all node types
+- Generator component implementation with Type IR system (27 tests passing):
+  - Intermediate Type IR representation (TypeInterface hierarchy)
+  - Mergeable type classes: HashmapType, StdObjectType, UnionType, ListType, ScalarType
+  - Two-phase generation: AST → Type IR → String
+  - Hashmap merging: optional keys, union types, recursive merging
   - KeyQuotingStyle enum for configurable key formatting
-  - Smart list union type handling with threshold
-  - Comprehensive test coverage for all scenarios
-  - Total: 33 tests passing (9 Lexer + 24 Generator)
+  - Comprehensive test coverage including hashmap merging scenarios
+  - Total: 36 tests passing (9 Lexer + 27 Generator)
 
 ## In Progress
+- Fine-tuning list merging logic for mixed types (1 test remaining)
 - CLI interface implementation
 
 ## Next Milestones
