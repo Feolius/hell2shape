@@ -350,7 +350,7 @@ final class GeneratorTest extends TestCase
   [3]=>
   int(42)
 }',
-                'list<array{a: int, b?: int}|string|int>',
+                'list<string|int|array{a: int, b?: int}>',
             ],
 
             'list with stdObjects - merging works' => [

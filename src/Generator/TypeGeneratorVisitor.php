@@ -113,14 +113,12 @@ final class TypeGeneratorVisitor implements NodeVisitorInterface
             return new ScalarType('array');
         }
 
-        $mergedType = null;
+        /** @var TypeInterface $itemType */
+        $itemType = $node->items[0]->value->accept($this);
         foreach ($node->items as $item) {
-            $itemType = $item->value->accept($this);
-            $mergedType = $mergedType === null
-                ? $itemType
-                : $mergedType->merge($itemType);
+            $itemType = $itemType->merge($item->value->accept($this));
         }
 
-        return new ListType($mergedType);
+        return new ListType($itemType);
     }
 }

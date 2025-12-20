@@ -20,7 +20,7 @@ final class StdObjectType implements TypeInterface
         }
     }
 
-    public function merge(TypeInterface $other): TypeInterface
+    public function merge(TypeInterface $other): UnionType|static
     {
         if (!$other instanceof StdObjectType) {
             return new UnionType([$this, $other]);
@@ -30,7 +30,7 @@ final class StdObjectType implements TypeInterface
 
         $allKeys = array_unique([
             ...array_keys($this->keys),
-            ...array_keys($other->keys)
+            ...array_keys($other->keys),
         ]);
 
         foreach ($allKeys as $keyName) {
@@ -60,6 +60,6 @@ final class StdObjectType implements TypeInterface
         foreach ($this->keys as $key) {
             $items[] = $key->toString($style);
         }
-        return 'object{' . implode(', ', $items) . '}';
+        return 'object{'.implode(', ', $items).'}';
     }
 }

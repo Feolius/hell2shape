@@ -2,6 +2,7 @@
 
 namespace App\Generator\Type;
 
+use App\Generator\GeneratorException;
 use App\Generator\KeyQuotingStyle;
 
 final readonly class UnionType implements TypeInterface
@@ -12,14 +13,15 @@ final readonly class UnionType implements TypeInterface
     private array $types;
 
     /**
-     * @param list<TypeInterface> $types
+     * @param  list<TypeInterface>  $types
+     * @throws GeneratorException
      */
     public function __construct(array $types)
     {
         $this->types = $this->deduplicateTypes($types);
     }
 
-    public function merge(TypeInterface $other): TypeInterface
+    public function merge(TypeInterface $other): UnionType
     {
         if ($other instanceof UnionType) {
             return new UnionType([...$this->types, ...$other->types]);
@@ -31,7 +33,7 @@ final readonly class UnionType implements TypeInterface
     public function toString(KeyQuotingStyle $style): string
     {
         $typeStrings = array_map(
-            fn(TypeInterface $type) => $type->toString($style),
+            static fn(TypeInterface $type) => $type->toString($style),
             $this->types
         );
 
@@ -39,37 +41,80 @@ final readonly class UnionType implements TypeInterface
     }
 
     /**
-     * @param list<TypeInterface> $types
+     * @param  list<TypeInterface>  $types
      * @return list<TypeInterface>
+     * @throws GeneratorException
      */
     private function deduplicateTypes(array $types): array
     {
-        $deduplicated = [];
-        $seen = [];
+        $types = $this->unpackUnions($types);
 
+        /** @var array<string, bool> $scalarTypes */
+        $scalarTypes = [];
+        /** @var ?HashmapType $hashMapType */
+        $hashMapType = null;
+        /** @var ?StdObjectType $stdObjectType */
+        $stdObjectType = null;
+        /** @var ?ListType $listType */
+        $listType = null;
+
+        $uniqueTypes = [];
         foreach ($types as $type) {
-            if ($type instanceof UnionType) {
-                foreach ($type->types as $innerType) {
-                    $key = $this->getTypeKey($innerType);
-                    if (!isset($seen[$key])) {
-                        $deduplicated[] = $innerType;
-                        $seen[$key] = true;
+            switch ($type::class) {
+                case ScalarType::class:
+                    if (!isset($scalarTypes[$type->getTypeName()])) {
+                        $uniqueTypes[] = $type;
+                        $scalarTypes[$type->getTypeName()] = true;
                     }
-                }
-            } else {
-                $key = $this->getTypeKey($type);
-                if (!isset($seen[$key])) {
-                    $deduplicated[] = $type;
-                    $seen[$key] = true;
-                }
+                    break;
+                case HashmapType::class:
+                    $hashMapType = $hashMapType === null ? $type : $hashMapType->merge($type);
+                    break;
+                case ListType::class:
+                    $listType = $listType === null ? $type : $listType->merge($type);
+                    break;
+                case StdObjectType::class:
+                    $stdObjectType = $stdObjectType === null ? $type : $stdObjectType->merge($type);
+                    break;
+                case UnionType::class:
+                    throw new GeneratorException('Union type is not expected after unpacking.');
+                default:
+                    throw new GeneratorException(sprintf('Unexpected type "%s".', $type::class));
             }
         }
 
-        return $deduplicated;
+        if ($hashMapType !== null) {
+            $uniqueTypes[] = $hashMapType;
+        }
+        if ($listType !== null) {
+            $uniqueTypes[] = $listType;
+        }
+        if ($stdObjectType !== null) {
+            $uniqueTypes[] = $stdObjectType;
+        }
+
+        return $uniqueTypes;
     }
 
-    private function getTypeKey(TypeInterface $type): string
+    /**
+     * @param  list<TypeInterface>  $types
+     * @return list<TypeInterface>
+     */
+    private function unpackUnions(array $types): array
     {
-        return $type->toString(KeyQuotingStyle::NoQuotes);
+        $unionExists = false;
+        do {
+            $unpackedTypes = [];
+            foreach ($types as $type) {
+                if ($type instanceof UnionType) {
+                    $unpackedTypes = [...$unpackedTypes, ...$type->types];
+                    $unionExists = true;
+                    continue;
+                }
+                $unpackedTypes[] = $type;
+            }
+            $types = $unpackedTypes;
+        } while ($unionExists);
+        return $unpackedTypes;
     }
 }

@@ -11,7 +11,7 @@ final readonly class ScalarType implements TypeInterface
     ) {
     }
 
-    public function merge(TypeInterface $other): TypeInterface
+    public function merge(TypeInterface $other): UnionType|static
     {
         if ($other instanceof ScalarType && $other->typeName === $this->typeName) {
             return $this;

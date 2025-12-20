@@ -20,7 +20,7 @@ final class HashmapType implements TypeInterface
         }
     }
 
-    public function merge(TypeInterface $other): TypeInterface
+    public function merge(TypeInterface $other): UnionType|static
     {
         if (!$other instanceof HashmapType) {
             return new UnionType([$this, $other]);
@@ -30,7 +30,7 @@ final class HashmapType implements TypeInterface
 
         $allKeys = array_unique([
             ...array_keys($this->keys),
-            ...array_keys($other->keys)
+            ...array_keys($other->keys),
         ]);
 
         foreach ($allKeys as $keyName) {
@@ -60,6 +60,6 @@ final class HashmapType implements TypeInterface
         foreach ($this->keys as $key) {
             $items[] = $key->toString($style);
         }
-        return 'array{' . implode(', ', $items) . '}';
+        return 'array{'.implode(', ', $items).'}';
     }
 }

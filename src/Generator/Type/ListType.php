@@ -11,7 +11,7 @@ final readonly class ListType implements TypeInterface
     ) {
     }
 
-    public function merge(TypeInterface $other): TypeInterface
+    public function merge(TypeInterface $other): UnionType|static
     {
         if (!$other instanceof ListType) {
             return new UnionType([$this, $other]);
@@ -23,6 +23,6 @@ final readonly class ListType implements TypeInterface
 
     public function toString(KeyQuotingStyle $style): string
     {
-        return 'list<' . $this->elementType->toString($style) . '>';
+        return 'list<'.$this->elementType->toString($style).'>';
     }
 }
