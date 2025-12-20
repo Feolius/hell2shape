@@ -102,8 +102,8 @@ final readonly class UnionType implements TypeInterface
      */
     private function unpackUnions(array $types): array
     {
-        $unionExists = false;
         do {
+            $unionExists = false;
             $unpackedTypes = [];
             foreach ($types as $type) {
                 if ($type instanceof UnionType) {
