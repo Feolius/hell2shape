@@ -414,4 +414,50 @@ final class UnionTypeTest extends TestCase
         $result = $union->toString(KeyQuotingStyle::NoQuotes);
         $this->assertSame('int|string|bool|float|null', $result);
     }
+
+    public function testDeeplyNestedHashmapMergingInList(): void
+    {
+        // First hashmap: { user: { profile: { name: string } } }
+        $innerHashmap1 = new HashmapType();
+        $innerHashmap1->addKey('name', new ScalarType('string'));
+
+        $middleHashmap1 = new HashmapType();
+        $middleHashmap1->addKey('profile', $innerHashmap1);
+
+        $outerHashmap1 = new HashmapType();
+        $outerHashmap1->addKey('user', $middleHashmap1);
+
+        // Second hashmap: { user: { profile: { age: int } } }
+        $innerHashmap2 = new HashmapType();
+        $innerHashmap2->addKey('age', new ScalarType('int'));
+
+        $middleHashmap2 = new HashmapType();
+        $middleHashmap2->addKey('profile', $innerHashmap2);
+
+        $outerHashmap2 = new HashmapType();
+        $outerHashmap2->addKey('user', $middleHashmap2);
+
+        // Third hashmap: { user: { settings: { theme: string } } }
+        $innerHashmap3 = new HashmapType();
+        $innerHashmap3->addKey('theme', new ScalarType('string'));
+
+        $middleHashmap3 = new HashmapType();
+        $middleHashmap3->addKey('settings', $innerHashmap3);
+
+        $outerHashmap3 = new HashmapType();
+        $outerHashmap3->addKey('user', $middleHashmap3);
+
+        // Create list of these hashmaps
+        $list1 = new ListType($outerHashmap1);
+        $list2 = new ListType($outerHashmap2);
+        $list3 = new ListType($outerHashmap3);
+
+        $union = new UnionType([$list1, $list2, $list3]);
+
+        $result = $union->toString(KeyQuotingStyle::NoQuotes);
+        $this->assertSame(
+            'list<array{user: array{profile?: array{name?: string, age?: int}, settings?: array{theme: string}}}>',
+            $result
+        );
+    }
 }
