@@ -1,0 +1,126 @@
+<?php
+
+namespace App\Tests\Generator;
+
+use App\Generator\Generator;
+use App\Generator\KeyQuotingStyle;
+use App\Lexer\Lexer;
+use App\Parser\Parser;
+use PHPUnit\Framework\TestCase;
+
+final class FormattingTest extends TestCase
+{
+    public function testFormattedOutput(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(3) {
+  ["user"]=>
+  array(3) {
+    ["id"]=>
+    int(1)
+    ["name"]=>
+    string(4) "John"
+    ["email"]=>
+    string(14) "john@example.com"
+  }
+  ["tags"]=>
+  array(2) {
+    [0]=>
+    string(3) "php"
+    [1]=>
+    string(3) "dev"
+  }
+  ["active"]=>
+  bool(true)
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+array{
+    user: array{
+        id: int,
+        name: string,
+        email: string
+    },
+    tags: list<string>,
+    active: bool
+}
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $generator = new Generator(KeyQuotingStyle::NoQuotes, indentSize: 4);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testFormattedOutputWithSingleQuotes(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "test"
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+array{
+    'id': int,
+    'name': string
+}
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $generator = new Generator(KeyQuotingStyle::SingleQuotes, indentSize: 4);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testFormattedOutputWithCustomIndent(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  ["user"]=>
+  array(2) {
+    ["id"]=>
+    int(1)
+    ["name"]=>
+    string(4) "John"
+  }
+  ["active"]=>
+  bool(true)
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+array{
+  user: array{
+    id: int,
+    name: string
+  },
+  active: bool
+}
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $generator = new Generator(KeyQuotingStyle::NoQuotes, indentSize: 2);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+}

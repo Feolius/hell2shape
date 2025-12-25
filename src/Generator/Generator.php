@@ -7,7 +7,8 @@ use App\Parser\Node\AbstractNode;
 final class Generator
 {
     public function __construct(
-        private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes
+        private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,
+        private readonly int $indentSize = 4
     ) {
     }
 
@@ -15,6 +16,8 @@ final class Generator
     {
         $visitor = new TypeGeneratorVisitor();
         $typeIR = $node->accept($visitor);
-        return $typeIR->toString($this->keyQuotingStyle);
+        
+        $formatter = new Type\TypeFormatterVisitor($this->keyQuotingStyle, $this->indentSize);
+        return $typeIR->accept($formatter);
     }
 }

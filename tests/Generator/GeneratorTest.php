@@ -19,7 +19,7 @@ final class GeneratorTest extends TestCase
     ): void {
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator($keyQuotingStyle);
+        $generator = new Generator($keyQuotingStyle, indentSize: 0);
 
         $tokens = $lexer->tokenize($varDumpOutput);
         $ast = $parser->parse($tokens);

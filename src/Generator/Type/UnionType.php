@@ -10,7 +10,7 @@ final readonly class UnionType implements TypeInterface
     /**
      * @var list<TypeInterface>
      */
-    private array $types;
+    private(set) array $types;
 
     /**
      * @param  list<TypeInterface>  $types
@@ -28,6 +28,11 @@ final readonly class UnionType implements TypeInterface
         }
 
         return new UnionType([...$this->types, $other]);
+    }
+
+    public function accept(TypeVisitorInterface $visitor): mixed
+    {
+        return $visitor->visitUnionType($this);
     }
 
     public function toString(KeyQuotingStyle $style): string

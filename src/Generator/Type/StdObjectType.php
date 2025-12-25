@@ -9,7 +9,7 @@ final class StdObjectType implements TypeInterface
     /**
      * @var array<string, HashmapKey>
      */
-    private array $keys = [];
+    private(set) array $keys = [];
 
     public function addKey(string $name, TypeInterface $type, bool $optional = false): void
     {
@@ -52,6 +52,11 @@ final class StdObjectType implements TypeInterface
         }
 
         return $merged;
+    }
+
+    public function accept(TypeVisitorInterface $visitor): mixed
+    {
+        return $visitor->visitStdObjectType($this);
     }
 
     public function toString(KeyQuotingStyle $style): string

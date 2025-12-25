@@ -20,6 +20,11 @@ final readonly class ScalarType implements TypeInterface
         return new UnionType([$this, $other]);
     }
 
+    public function accept(TypeVisitorInterface $visitor): mixed
+    {
+        return $visitor->visitScalarType($this);
+    }
+
     public function toString(KeyQuotingStyle $style): string
     {
         return $this->typeName;

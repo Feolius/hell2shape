@@ -7,7 +7,7 @@ use App\Generator\KeyQuotingStyle;
 final readonly class ListType implements TypeInterface
 {
     public function __construct(
-        private TypeInterface $elementType
+        private(set) TypeInterface $elementType
     ) {
     }
 
@@ -19,6 +19,11 @@ final readonly class ListType implements TypeInterface
 
         $mergedElement = $this->elementType->merge($other->elementType);
         return new ListType($mergedElement);
+    }
+
+    public function accept(TypeVisitorInterface $visitor): mixed
+    {
+        return $visitor->visitListType($this);
     }
 
     public function toString(KeyQuotingStyle $style): string

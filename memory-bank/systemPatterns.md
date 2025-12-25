@@ -16,13 +16,17 @@
      * Brace counting mechanism to handle nested objects correctly
 
 3. Generator:
-   - Two-phase generation: AST → Type IR → String
+   - Three-phase generation: AST → Type IR → Formatter → String
    - **Phase 1**: TypeGeneratorVisitor converts AST to Type IR (TypeInterface)
-   - **Phase 2**: Type IR toString() generates PHPStan type annotations
+   - **Phase 2**: TypeFormatterVisitor formats Type IR with indentation
+   - **Phase 3**: String output with proper formatting
    - Configurable options:
      * KeyQuotingStyle: NoQuotes, SingleQuotes, DoubleQuotes
+     * indentSize: 0 (single-line), 2, 4 (default), or custom
    - **Type IR System**:
-     * TypeInterface: Base interface with merge() and toString()
+     * TypeInterface: Base interface with merge(), accept(), and toString()
+     * TypeVisitorInterface: Generic visitor for operations on Type IR
+     * TypeFormatterVisitor: Handles all formatting logic
      * ScalarType: Non-mergeable types (int, string, bool, etc.)
      * UnionType: Automatic deduplication of union members
      * HashmapType: Mergeable array shapes with optional key support
@@ -32,11 +36,18 @@
      * Hashmaps/StdObjects: Missing keys become optional (?), different types create unions
      * Recursive merging for nested structures
      * Non-hashmap types create unions when merged
+   - **Formatting Logic**:
+     * Multi-line: Hashmaps and objects get newlines after each element
+     * Single-line: Unions stay on one line (e.g., `int|string|float`)
+     * Recursive indentation: Nested structures properly indented
+     * Configurable indent size for different coding standards
 
 ## Data Flow
-1. var_dump → Lexer → Parser → Generator → type annotation
-2. Each component handles its own error cases
-3. AST nodes implement accept() for generic visitor pattern
+1. var_dump → Lexer → Parser → TypeGeneratorVisitor → Type IR
+2. Type IR → TypeFormatterVisitor → formatted string
+3. Each component handles its own error cases
+4. AST nodes implement accept() for NodeVisitorInterface
+5. Type IR implements accept() for TypeVisitorInterface
 
 ## Key Design Decisions
 - Strict separation of lexical analysis, parsing and generation
@@ -55,15 +66,31 @@
   - Item nodes: ListItemNode, HashmapItemNode, StdObjectItemNode
 
 ## Visitor Pattern Architecture
+
+### AST Visitor Pattern (Parser → Generator)
 - **NodeVisitorInterface<R>**: Generic visitor interface in Parser namespace
   - Template parameter R defines the return type of visit methods
   - All visit methods return mixed (actual type determined by R)
   - Enables different visitor implementations with different return types
-- **TypeGeneratorVisitor**: Implements NodeVisitorInterface<string>
-  - Generates PHPStan type annotations from AST nodes
-  - Returns string type for all visit methods
+- **TypeGeneratorVisitor**: Implements NodeVisitorInterface<TypeInterface>
+  - Converts AST nodes to Type IR
+  - Returns TypeInterface for all visit methods
 - **Benefits**:
   - Decoupling: Parser namespace independent of Generator namespace
   - Extensibility: New visitors can be created without modifying nodes
   - Type safety: Generic R parameter ensures type consistency
   - Flexibility: Different visitors can return different types
+
+### Type IR Visitor Pattern (Type IR → Output)
+- **TypeVisitorInterface**: Generic visitor interface in Generator\Type namespace
+  - Defines visit methods for all Type IR classes
+  - Returns mixed to allow different visitor implementations
+- **TypeFormatterVisitor**: Implements TypeVisitorInterface
+  - Formats Type IR into strings with configurable indentation
+  - Handles KeyQuotingStyle application
+  - Manages recursive indentation for nested structures
+- **Benefits**:
+  - Separation of concerns: Types handle structure, formatters handle presentation
+  - Extensibility: Easy to add new visitors (JSON export, analysis, etc.)
+  - Flexibility: Different formatters for different output needs
+  - Testability: Formatting logic isolated and independently testable
