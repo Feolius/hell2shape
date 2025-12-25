@@ -2,8 +2,6 @@
 
 namespace App\Generator\Type;
 
-use App\Generator\KeyQuotingStyle;
-
 final readonly class HashmapKey
 {
     public function __construct(
@@ -27,19 +25,9 @@ final readonly class HashmapKey
         return new self($this->name, $this->type, true);
     }
 
-    public function toString(KeyQuotingStyle $style): string
+    public function toString(): string
     {
-        $key = $this->formatKey($style);
         $optional = $this->optional ? '?' : '';
-        return "{$key}{$optional}: {$this->type->toString($style)}";
-    }
-
-    private function formatKey(KeyQuotingStyle $style): string
-    {
-        return match ($style) {
-            KeyQuotingStyle::SingleQuotes => "'{$this->name}'",
-            KeyQuotingStyle::DoubleQuotes => "\"{$this->name}\"",
-            KeyQuotingStyle::NoQuotes => $this->name,
-        };
+        return "{$this->name}{$optional}: {$this->type->toString()}";
     }
 }

@@ -16,7 +16,7 @@ final class Generator
     {
         $visitor = new TypeGeneratorVisitor();
         $typeIR = $node->accept($visitor);
-        
+
         $formatter = new Type\TypeFormatterVisitor($this->keyQuotingStyle, $this->indentSize);
         return $typeIR->accept($formatter);
     }

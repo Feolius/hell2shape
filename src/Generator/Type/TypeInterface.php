@@ -3,7 +3,6 @@
 namespace App\Generator\Type;
 
 use App\Generator\GeneratorException;
-use App\Generator\KeyQuotingStyle;
 
 interface TypeInterface
 {
@@ -26,5 +25,5 @@ interface TypeInterface
     /**
      * Convert this type to a PHPStan type string (single-line, for testing).
      */
-    public function toString(KeyQuotingStyle $style): string;
+    public function toString(): string;
 }

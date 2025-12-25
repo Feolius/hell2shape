@@ -2,14 +2,14 @@
 
 namespace App\Tests\Generator;
 
-use App\Generator\Generator;
 use App\Generator\KeyQuotingStyle;
+use App\Generator\TypeGeneratorVisitor;
 use App\Lexer\Lexer;
 use App\Parser\Parser;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-final class GeneratorTest extends TestCase
+final class TypeGeneratorVisitorTest extends TestCase
 {
     #[DataProvider('typeGenerationProvider')]
     public function testTypeGeneration(
@@ -19,13 +19,13 @@ final class GeneratorTest extends TestCase
     ): void {
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator($keyQuotingStyle, indentSize: 0);
+        $visitor = new TypeGeneratorVisitor();
 
         $tokens = $lexer->tokenize($varDumpOutput);
         $ast = $parser->parse($tokens);
-        $result = $generator->generate($ast);
+        $result = $ast->accept($visitor);
 
-        $this->assertSame($expectedType, $result);
+        $this->assertSame($expectedType, $result->toString());
     }
 
     public static function typeGenerationProvider(): array
@@ -150,30 +150,6 @@ final class GeneratorTest extends TestCase
   int(42)
 }',
                 'array{0: string, 10: int}',
-            ],
-
-            // Hashmap with single quotes
-            'hashmap with single quotes' => [
-                'array(2) {
-  ["id"]=>
-  int(1)
-  ["name"]=>
-  string(4) "test"
-}',
-                "array{'id': int, 'name': string}",
-                KeyQuotingStyle::SingleQuotes,
-            ],
-
-            // Hashmap with double quotes
-            'hashmap with double quotes' => [
-                'array(2) {
-  ["id"]=>
-  int(1)
-  ["name"]=>
-  string(4) "test"
-}',
-                'array{"id": int, "name": string}',
-                KeyQuotingStyle::DoubleQuotes,
             ],
 
             // StdObject

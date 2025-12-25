@@ -2,8 +2,6 @@
 
 namespace App\Generator\Type;
 
-use App\Generator\KeyQuotingStyle;
-
 final readonly class ScalarType implements TypeInterface
 {
     public function __construct(
@@ -25,7 +23,7 @@ final readonly class ScalarType implements TypeInterface
         return $visitor->visitScalarType($this);
     }
 
-    public function toString(KeyQuotingStyle $style): string
+    public function toString(): string
     {
         return $this->typeName;
     }

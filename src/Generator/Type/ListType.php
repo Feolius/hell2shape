@@ -2,8 +2,6 @@
 
 namespace App\Generator\Type;
 
-use App\Generator\KeyQuotingStyle;
-
 final readonly class ListType implements TypeInterface
 {
     public function __construct(
@@ -26,8 +24,8 @@ final readonly class ListType implements TypeInterface
         return $visitor->visitListType($this);
     }
 
-    public function toString(KeyQuotingStyle $style): string
+    public function toString(): string
     {
-        return 'list<'.$this->elementType->toString($style).'>';
+        return 'list<'.$this->elementType->toString().'>';
     }
 }

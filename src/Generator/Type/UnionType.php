@@ -3,14 +3,13 @@
 namespace App\Generator\Type;
 
 use App\Generator\GeneratorException;
-use App\Generator\KeyQuotingStyle;
 
 final readonly class UnionType implements TypeInterface
 {
     /**
      * @var list<TypeInterface>
      */
-    private(set) array $types;
+    public private(set) array $types;
 
     /**
      * @param  list<TypeInterface>  $types
@@ -35,10 +34,10 @@ final readonly class UnionType implements TypeInterface
         return $visitor->visitUnionType($this);
     }
 
-    public function toString(KeyQuotingStyle $style): string
+    public function toString(): string
     {
         $typeStrings = array_map(
-            static fn(TypeInterface $type) => $type->toString($style),
+            static fn(TypeInterface $type) => $type->toString(),
             $this->types
         );
 

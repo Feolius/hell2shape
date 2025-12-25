@@ -2,14 +2,12 @@
 
 namespace App\Generator\Type;
 
-use App\Generator\KeyQuotingStyle;
-
 final class StdObjectType implements TypeInterface
 {
     /**
      * @var array<string, HashmapKey>
      */
-    private(set) array $keys = [];
+    public private(set) array $keys = [];
 
     public function addKey(string $name, TypeInterface $type, bool $optional = false): void
     {
@@ -59,11 +57,11 @@ final class StdObjectType implements TypeInterface
         return $visitor->visitStdObjectType($this);
     }
 
-    public function toString(KeyQuotingStyle $style): string
+    public function toString(): string
     {
         $items = [];
         foreach ($this->keys as $key) {
-            $items[] = $key->toString($style);
+            $items[] = $key->toString();
         }
         return 'object{'.implode(', ', $items).'}';
     }
