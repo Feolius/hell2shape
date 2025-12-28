@@ -123,4 +123,71 @@ EXPECTED;
 
         $this->assertSame($expected, $result);
     }
+
+    public function testIntegerKeysWithSingleQuotes(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(3) {
+  [0]=>
+  string(3) "foo"
+  [5]=>
+  string(3) "bar"
+  [10]=>
+  int(42)
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+array{
+    0: string,
+    5: string,
+    10: int
+}
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $generator = new Generator(KeyQuotingStyle::SingleQuotes, indentSize: 4);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testMixedIntegerAndStringKeysWithDoubleQuotes(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(4) {
+  [0]=>
+  string(3) "foo"
+  ["name"]=>
+  string(4) "John"
+  [10]=>
+  int(42)
+  ["email"]=>
+  string(14) "john@example.com"
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+array{
+    0: string,
+    "name": string,
+    10: int,
+    "email": string
+}
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $generator = new Generator(KeyQuotingStyle::DoubleQuotes, indentSize: 4);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
 }

@@ -5,12 +5,12 @@ namespace App\Generator\Type;
 final class StdObjectType implements TypeInterface
 {
     /**
-     * @var array<string, HashmapKey>
+     * @var array<string, StdObjectKey>
      */
     public private(set) array $keys = [];
 
     /**
-     * @param  list<HashmapKey>  $keys
+     * @param  list<StdObjectKey>  $keys
      */
     public function __construct(array $keys)
     {

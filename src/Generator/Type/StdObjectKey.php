@@ -2,10 +2,10 @@
 
 namespace App\Generator\Type;
 
-final readonly class HashmapKey
+final readonly class StdObjectKey
 {
     public function __construct(
-        public string|int $name,
+        public string $name,
         public TypeInterface $type,
         public bool $optional = false
     ) {

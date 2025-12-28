@@ -48,7 +48,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
     }
 
     /**
-     * @param array<string, HashmapKey> $keys
+     * @param array<string, HashmapKey>|array<string, StdObjectKey> $keys
      */
     private function formatStructure(string $prefix, array $keys): string
     {
@@ -80,9 +80,9 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
         return $prefix."{\n".implode(",\n", $items)."\n".$outerIndent.'}';
     }
 
-    private function formatKey(HashmapKey $key): string
+    private function formatKey(HashmapKey|StdObjectKey $key): string
     {
-        $keyName = $this->formatKeyName($key->name);
+        $keyName = is_int($key->name) ? (string)$key->name : $this->formatKeyName($key->name);
         $optional = $key->optional ? '?' : '';
         $typeString = $key->type->accept($this);
 

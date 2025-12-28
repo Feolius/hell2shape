@@ -78,8 +78,7 @@ final class TypeGeneratorVisitor implements NodeVisitorInterface
 
         $keys = [];
         foreach ($node->items as $item) {
-            $keyName = (string)$item->key;
-            $keys[$keyName] = new HashmapKey($keyName, $item->value->accept($this));
+            $keys[$item->key->value] = new HashmapKey($item->key->value, $item->value->accept($this));
         }
         return new HashmapType(array_values($keys));
     }
