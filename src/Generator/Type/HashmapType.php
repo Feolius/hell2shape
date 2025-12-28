@@ -5,9 +5,9 @@ namespace App\Generator\Type;
 final class HashmapType implements TypeInterface
 {
     /**
-     * @var array<string, HashmapKey>
+     * @var array<string|int, HashmapKey>
      */
-    public private(set) array $keys = [];
+    private(set) array $keys = [];
 
     /**
      * @param  list<HashmapKey>  $keys
@@ -16,15 +16,6 @@ final class HashmapType implements TypeInterface
     {
         foreach ($keys as $key) {
             $this->keys[$key->name] = $key;
-        }
-    }
-
-    public function addKey(string $name, TypeInterface $type, bool $optional = false): void
-    {
-        if (!isset($this->keys[$name])) {
-            $this->keys[$name] = new HashmapKey($name, $type, $optional);
-        } else {
-            $this->keys[$name] = $this->keys[$name]->merge($type);
         }
     }
 

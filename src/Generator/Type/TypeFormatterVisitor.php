@@ -48,7 +48,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
     }
 
     /**
-     * @param array<string, HashmapKey>|array<string, StdObjectKey> $keys
+     * @param array<string|int, HashmapKey>|array<string, StdObjectKey> $keys
      */
     private function formatStructure(string $prefix, array $keys): string
     {

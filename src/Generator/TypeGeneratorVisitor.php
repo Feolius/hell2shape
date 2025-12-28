@@ -6,6 +6,7 @@ use App\Generator\Type\HashmapKey;
 use App\Generator\Type\HashmapType;
 use App\Generator\Type\ListType;
 use App\Generator\Type\ScalarType;
+use App\Generator\Type\StdObjectKey;
 use App\Generator\Type\StdObjectType;
 use App\Generator\Type\TypeInterface;
 use App\Parser\Node\AnonymousObjectNode;
@@ -97,7 +98,7 @@ final class TypeGeneratorVisitor implements NodeVisitorInterface
         $keys = [];
         foreach ($node->items as $item) {
             $keyName = (string)$item->key;
-            $keys[$keyName] = new HashmapKey($keyName, $item->value->accept($this));
+            $keys[$keyName] = new StdObjectKey($keyName, $item->value->accept($this));
         }
         return new StdObjectType(array_values($keys));
     }

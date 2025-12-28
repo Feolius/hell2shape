@@ -41,11 +41,11 @@ final class StdObjectType implements TypeInterface
                 );
                 $optional = $this->keys[$keyName]->optional ||
                            $other->keys[$keyName]->optional;
-                $mergedKey = new HashmapKey($keyName, $mergedType, $optional);
+                $mergedKey = new StdObjectKey($keyName, $mergedType, $optional);
             } elseif ($inThis) {
-                $mergedKey = new HashmapKey($keyName, $this->keys[$keyName]->type, true);
+                $mergedKey = new StdObjectKey($keyName, $this->keys[$keyName]->type, true);
             } else {
-                $mergedKey = new HashmapKey($keyName, $other->keys[$keyName]->type, true);
+                $mergedKey = new StdObjectKey($keyName, $other->keys[$keyName]->type, true);
             }
             $mergedKeys[] = $mergedKey;
         }
