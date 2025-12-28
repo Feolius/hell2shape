@@ -29,9 +29,11 @@
      * TypeFormatterVisitor: Handles all formatting logic
      * ScalarType: Non-mergeable types (int, string, bool, etc.)
      * UnionType: Automatic deduplication of union members
-     * HashmapType: Mergeable array shapes with optional key support
-     * StdObjectType: Mergeable stdClass objects
+     * HashmapType: Mergeable array shapes with optional key support (immutable)
+     * StdObjectType: Mergeable stdClass objects (immutable)
      * ListType: Contains element type (can be merged or union)
+     * HashmapKey: Represents hashmap keys (int|string) with optional flag
+     * StdObjectKey: Represents object keys (string only) with optional flag
    - **Merging Logic**:
      * Hashmaps/StdObjects: Missing keys become optional (?), different types create unions
      * Recursive merging for nested structures
@@ -41,6 +43,8 @@
      * Single-line: Unions stay on one line (e.g., `int|string|float`)
      * Recursive indentation: Nested structures properly indented
      * Configurable indent size for different coding standards
+     * **Integer key rule**: Integer keys always output without quotes, regardless of KeyQuotingStyle
+     * String keys respect KeyQuotingStyle (NoQuotes, SingleQuotes, DoubleQuotes)
 
 ## Data Flow
 1. var_dump → Lexer → Parser → TypeGeneratorVisitor → Type IR

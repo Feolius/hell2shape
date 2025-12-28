@@ -25,7 +25,12 @@
   - Recursive indentation for nested structures
   - Configurable indent size (0 for single-line, 2, 4 default, or custom)
   - Backward compatible with existing tests
-  - Total: 67 tests passing (9 Lexer + 55 Generator + 3 Formatting)
+- **Type immutability and key separation**:
+  - Made HashmapType and StdObjectType immutable (constructor-only initialization)
+  - Split key types: StdObjectKey (string only) vs HashmapKey (int|string)
+  - Integer key formatting rule: always without quotes regardless of KeyQuotingStyle
+  - Added tests for integer key formatting behavior
+  - Total: 69 tests passing (9 Lexer + 55 Generator + 5 Formatting)
 
 ## In Progress
 - CLI interface implementation

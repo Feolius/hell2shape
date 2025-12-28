@@ -34,7 +34,11 @@
 - **Added accept() method** to all Type classes for visitor pattern
 - **Updated Generator** to use TypeFormatterVisitor with configurable indentSize
 - **Exposed properties** using `private(set)` in UnionType, ListType, HashmapType, StdObjectType
+- **Made HashmapType and StdObjectType immutable** - removed addKey() method, constructor-only initialization
 - **Added FormattingTest** to demonstrate multi-line formatting capabilities
+- **Split key types**: Introduced StdObjectKey (string keys only) separate from HashmapKey (int|string keys)
+- **Integer key formatting rule**: Integer keys always output without quotes, regardless of KeyQuotingStyle
+- **Added tests** for integer key formatting behavior (testIntegerKeysWithSingleQuotes, testMixedIntegerAndStringKeysWithDoubleQuotes)
 
 ## Type IR Architecture
 - **Three-phase generation**: AST → Type IR → Formatter → String
