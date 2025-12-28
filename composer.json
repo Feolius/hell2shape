@@ -1,7 +1,8 @@
 {
     "name": "feolius/hell2shape",
     "require": {
-        "symfony/polyfill": "^1.33"
+        "symfony/polyfill": "^1.33",
+        "symfony/console": "^8.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
