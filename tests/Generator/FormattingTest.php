@@ -3,6 +3,7 @@
 namespace App\Tests\Generator;
 
 use App\Generator\Generator;
+use App\Generator\GeneratorConfig;
 use App\Generator\KeyQuotingStyle;
 use App\Lexer\Lexer;
 use App\Parser\Parser;
@@ -49,7 +50,8 @@ EXPECTED;
 
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator(KeyQuotingStyle::NoQuotes, indentSize: 4);
+        $config = new GeneratorConfig(KeyQuotingStyle::NoQuotes, indentSize: 4);
+        $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
         $ast = $parser->parse($tokens);
@@ -78,7 +80,8 @@ EXPECTED;
 
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator(KeyQuotingStyle::SingleQuotes, indentSize: 4);
+        $config = new GeneratorConfig(KeyQuotingStyle::SingleQuotes, indentSize: 4);
+        $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
         $ast = $parser->parse($tokens);
@@ -115,7 +118,8 @@ EXPECTED;
 
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator(KeyQuotingStyle::NoQuotes, indentSize: 2);
+        $config = new GeneratorConfig(KeyQuotingStyle::NoQuotes, indentSize: 2);
+        $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
         $ast = $parser->parse($tokens);
@@ -147,7 +151,8 @@ EXPECTED;
 
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator(KeyQuotingStyle::SingleQuotes, indentSize: 4);
+        $config = new GeneratorConfig(KeyQuotingStyle::SingleQuotes, indentSize: 4);
+        $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
         $ast = $parser->parse($tokens);
@@ -182,7 +187,8 @@ EXPECTED;
 
         $lexer = new Lexer();
         $parser = new Parser();
-        $generator = new Generator(KeyQuotingStyle::DoubleQuotes, indentSize: 4);
+        $config = new GeneratorConfig(KeyQuotingStyle::DoubleQuotes, indentSize: 4);
+        $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
         $ast = $parser->parse($tokens);

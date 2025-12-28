@@ -7,7 +7,7 @@ final class HashmapType implements TypeInterface
     /**
      * @var array<string|int, HashmapKey>
      */
-    private(set) array $keys = [];
+    public private(set) array $keys = [];
 
     /**
      * @param  list<HashmapKey>  $keys

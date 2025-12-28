@@ -2,6 +2,7 @@
 
 namespace App\Generator\Type;
 
+use App\Generator\GeneratorConfig;
 use App\Generator\KeyQuotingStyle;
 
 /**
@@ -12,8 +13,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
     private int $currentIndent = 0;
 
     public function __construct(
-        private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,
-        private readonly int $indentSize = 4,
+        private readonly GeneratorConfig $config,
     ) {
     }
 
@@ -57,7 +57,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
         }
 
         // Single-line format (no indentation)
-        if ($this->indentSize === 0) {
+        if ($this->config->indentSize === 0) {
             $items = [];
             foreach ($keys as $key) {
                 $items[] = $this->formatKey($key);
@@ -66,7 +66,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
         }
 
         // Multi-line format with indentation
-        $this->currentIndent += $this->indentSize;
+        $this->currentIndent += $this->config->indentSize;
         $indent = str_repeat(' ', $this->currentIndent);
 
         $items = [];
@@ -74,7 +74,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
             $items[] = $indent.$this->formatKey($key);
         }
 
-        $this->currentIndent -= $this->indentSize;
+        $this->currentIndent -= $this->config->indentSize;
         $outerIndent = str_repeat(' ', $this->currentIndent);
 
         return $prefix."{\n".implode(",\n", $items)."\n".$outerIndent.'}';
@@ -91,7 +91,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
 
     private function formatKeyName(string $name): string
     {
-        return match ($this->keyQuotingStyle) {
+        return match ($this->config->keyQuotingStyle) {
             KeyQuotingStyle::SingleQuotes => "'{$name}'",
             KeyQuotingStyle::DoubleQuotes => "\"{$name}\"",
             KeyQuotingStyle::NoQuotes => $name,
