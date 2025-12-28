@@ -9,10 +9,11 @@ use App\Generator\KeyQuotingStyle;
  */
 final class TypeFormatterVisitor implements TypeVisitorInterface
 {
+    private int $currentIndent = 0;
+
     public function __construct(
         private readonly KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes,
         private readonly int $indentSize = 4,
-        private int $currentIndent = 0
     ) {
     }
 

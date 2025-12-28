@@ -28,7 +28,7 @@ final class StdObjectType implements TypeInterface
         $allKeys = array_unique([
             ...array_keys($this->keys),
             ...array_keys($other->keys),
-        ], SORT_REGULAR);
+        ]);
 
         $mergedKeys = [];
         foreach ($allKeys as $keyName) {

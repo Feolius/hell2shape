@@ -12,7 +12,7 @@ final readonly class HashmapItemNode extends AbstractNode
 
     public function __toString(): string
     {
-        return (string)$this->key.' => '.(string)$this->value;
+        return $this->key.' => '.$this->value;
     }
 
     public function accept(NodeVisitorInterface $visitor): mixed

@@ -20,11 +20,6 @@ final readonly class HashmapKey
         );
     }
 
-    public function markAsOptional(): self
-    {
-        return new self($this->name, $this->type, true);
-    }
-
     public function toString(): string
     {
         $optional = $this->optional ? '?' : '';
