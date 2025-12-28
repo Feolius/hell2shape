@@ -2,6 +2,7 @@
 
 namespace App\Generator;
 
+use App\Generator\Type\HashmapKey;
 use App\Generator\Type\HashmapType;
 use App\Generator\Type\ListType;
 use App\Generator\Type\ScalarType;
@@ -75,14 +76,12 @@ final class TypeGeneratorVisitor implements NodeVisitorInterface
             return new ScalarType('array');
         }
 
-        $hashmap = new HashmapType();
+        $keys = [];
         foreach ($node->items as $item) {
             $keyName = (string)$item->key;
-            $valueType = $item->value->accept($this);
-            $hashmap->addKey($keyName, $valueType);
+            $keys[$keyName] = new HashmapKey($keyName, $item->value->accept($this));
         }
-
-        return $hashmap;
+        return new HashmapType(array_values($keys));
     }
 
     public function visitHashmapItem(HashmapItemNode $node): TypeInterface
@@ -92,14 +91,16 @@ final class TypeGeneratorVisitor implements NodeVisitorInterface
 
     public function visitStdObject(StdObjectNode $node): TypeInterface
     {
-        $stdObject = new StdObjectType();
-        foreach ($node->items as $item) {
-            $keyName = (string)$item->key;
-            $valueType = $item->value->accept($this);
-            $stdObject->addKey($keyName, $valueType);
+        if (empty($node->items)) {
+            return new ScalarType('object');
         }
 
-        return $stdObject;
+        $keys = [];
+        foreach ($node->items as $item) {
+            $keyName = (string)$item->key;
+            $keys[$keyName] = new HashmapKey($keyName, $item->value->accept($this));
+        }
+        return new StdObjectType(array_values($keys));
     }
 
     public function visitStdObjectItem(StdObjectItemNode $node): TypeInterface

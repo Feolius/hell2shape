@@ -9,6 +9,16 @@ final class HashmapType implements TypeInterface
      */
     public private(set) array $keys = [];
 
+    /**
+     * @param  list<HashmapKey>  $keys
+     */
+    public function __construct(array $keys)
+    {
+        foreach ($keys as $key) {
+            $this->keys[$key->name] = $key;
+        }
+    }
+
     public function addKey(string $name, TypeInterface $type, bool $optional = false): void
     {
         if (!isset($this->keys[$name])) {
@@ -24,13 +34,12 @@ final class HashmapType implements TypeInterface
             return new UnionType([$this, $other]);
         }
 
-        $merged = new HashmapType();
-
         $allKeys = array_unique([
             ...array_keys($this->keys),
             ...array_keys($other->keys),
         ]);
 
+        $mergedKeys = [];
         foreach ($allKeys as $keyName) {
             $inThis = isset($this->keys[$keyName]);
             $inOther = isset($other->keys[$keyName]);
@@ -41,15 +50,16 @@ final class HashmapType implements TypeInterface
                 );
                 $optional = $this->keys[$keyName]->optional ||
                            $other->keys[$keyName]->optional;
-                $merged->addKey($keyName, $mergedType, $optional);
+                $mergedKey = new HashmapKey($keyName, $mergedType, $optional);
             } elseif ($inThis) {
-                $merged->addKey($keyName, $this->keys[$keyName]->type, true);
+                $mergedKey = new HashmapKey($keyName, $this->keys[$keyName]->type, true);
             } else {
-                $merged->addKey($keyName, $other->keys[$keyName]->type, true);
+                $mergedKey = new HashmapKey($keyName, $other->keys[$keyName]->type, true);
             }
+            $mergedKeys[] = $mergedKey;
         }
 
-        return $merged;
+        return new HashmapType($mergedKeys);
     }
 
     public function accept(TypeVisitorInterface $visitor): mixed
