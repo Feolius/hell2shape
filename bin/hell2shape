@@ -1,8 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
-
 use App\Generator\Generator;
 use App\Generator\GeneratorConfig;
 use App\Generator\KeyQuotingStyle;
@@ -15,70 +13,114 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
 
-new SingleCommandApplication()
-    ->setName('hell2shape')
-    ->setVersion('0.1.0')
-    ->setDescription('Generate PHPStan typings from var_dump output')
-    ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
-    ->setCode(function (
-        OutputInterface $output,
-        #[Option(description: 'Indentation size (use 0 for single-line output)', name: 'indent', shortcut: 'i')]
-        string $indent = '4',
-        #[Option(
-            description: 'Key quoting style: none, single, or double',
-            name: 'quotes',
-            shortcut: null,
-            suggestedValues: [KeyQuotingStyle::NoQuotes->value, KeyQuotingStyle::SingleQuotes->value, KeyQuotingStyle::DoubleQuotes->value],
-        )
-        ]
-        string $quotes = KeyQuotingStyle::NoQuotes->value,
-    ): int {
-        $input = stream_get_contents(STDIN);
-        if (empty($input)) {
-            $output->writeln('<error>No input provided. Please pipe var_dump output to this command.</error>');
-            $output->writeln('');
-            $output->writeln('Example: php -r \'var_dump($data);\' | bin/hell2shape');
-            return Command::FAILURE;
+function autoload(): void
+{
+    $autoloadPaths = [
+        // local dev repository
+        dirname(__DIR__).'/vendor/autoload.php',
+        // dependency
+        dirname(__DIR__, 4).'/vendor/autoload.php',
+    ];
+
+    $cwd = \getcwd();
+    if ($cwd) {
+        $autoloadPaths = [...$autoloadPaths,
+            // running from project root
+            $cwd.'/vendor/autoload.php',
+            // running from project bin
+            dirname($cwd).'/autoload.php',
+        ];
+    }
+
+    $autoloadFound = null;
+    foreach ($autoloadPaths as $autoloadPath) {
+        if (file_exists($autoloadPath)) {
+            require_once $autoloadPath;
+            $autoloadFound = true;
+            break;
         }
+    }
 
-        $indent = filter_var($indent, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
-        if ($indent === false) {
-            $output->writeln('<error>Indent option must be non-negative integer.</error>');
-            return Command::FAILURE;
-        }
+    if (!$autoloadFound) {
+        $message = "Unable to find Composer autoload file.\n\n";
+        $message .= '- '.\implode("\n- ", $autoloadPaths)."\n\n";
+        fwrite(STDERR, $message);
+        exit(1);
+    }
+}
 
-        $quotingStyle = KeyQuotingStyle::tryFrom($quotes);
-        if ($quotingStyle === null) {
-            $quotingOptions = implode(
-                ',',
-                array_map(fn(KeyQuotingStyle $s) => $s->value, KeyQuotingStyle::cases())
-            );
-            $output->writeln("<error>Invalid quoting style. Must be one of: {$quotingOptions}</error>");
-            return Command::FAILURE;
-        }
+(static function (): void {
+    autoload();
 
-        $config = new GeneratorConfig($quotingStyle, $indent);
-        try {
-            $lexer = new Lexer();
-            $tokens = $lexer->tokenize($input);
+    new SingleCommandApplication()
+        ->setName('hell2shape')
+        ->setVersion('0.1.0')
+        ->setDescription('Generate PHPStan typings from var_dump output')
+        ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
+        ->setCode(function (
+            OutputInterface $output,
+            #[Option(description: 'Indentation size (use 0 for single-line output)', name: 'indent', shortcut: 'i')]
+            string $indent = '4',
+            #[Option(
+                description: 'Key quoting style: none, single, or double',
+                name: 'quotes',
+                shortcut: null,
+                suggestedValues: [
+                    KeyQuotingStyle::NoQuotes->value,
+                    KeyQuotingStyle::SingleQuotes->value,
+                    KeyQuotingStyle::DoubleQuotes->value,
+                ],
+            )
+            ]
+            string $quotes = KeyQuotingStyle::NoQuotes->value,
+        ): int {
+            $input = stream_get_contents(STDIN);
+            if (empty($input)) {
+                $output->writeln('<error>No input provided. Please pipe var_dump output to this command.</error>');
+                $output->writeln('');
+                $output->writeln('Example: php -r \'var_dump($data);\' | bin/hell2shape');
+                return Command::FAILURE;
+            }
 
-            $parser = new Parser();
-            $ast = $parser->parse($tokens);
+            $indent = filter_var($indent, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
+            if ($indent === false) {
+                $output->writeln('<error>Indent option must be non-negative integer.</error>');
+                return Command::FAILURE;
+            }
 
-            $generator = new Generator($config);
-            $result = $generator->generate($ast);
+            $quotingStyle = KeyQuotingStyle::tryFrom($quotes);
+            if ($quotingStyle === null) {
+                $quotingOptions = implode(
+                    ',',
+                    array_map(fn(KeyQuotingStyle $s) => $s->value, KeyQuotingStyle::cases())
+                );
+                $output->writeln("<error>Invalid quoting style. Must be one of: {$quotingOptions}</error>");
+                return Command::FAILURE;
+            }
 
-            $output->writeln($result);
-            return Command::SUCCESS;
-        } catch (LexerException $e) {
-            $output->writeln("<error>{$e->getMessage()}</error>");
-            return Command::FAILURE;
-        } catch (ParserException $e) {
-            $output->writeln("<error>Parser error: {$e->getMessage()}</error>");
-            return Command::FAILURE;
-        } catch (\Throwable $e) {
-            $output->writeln("<error>Unexpected error: {$e->getMessage()}</error>");
-            return Command::FAILURE;
-        }
-    })
-    ->run();
+            $config = new GeneratorConfig($quotingStyle, $indent);
+            try {
+                $lexer = new Lexer();
+                $tokens = $lexer->tokenize($input);
+
+                $parser = new Parser();
+                $ast = $parser->parse($tokens);
+
+                $generator = new Generator($config);
+                $result = $generator->generate($ast);
+
+                $output->writeln($result);
+                return Command::SUCCESS;
+            } catch (LexerException $e) {
+                $output->writeln("<error>{$e->getMessage()}</error>");
+                return Command::FAILURE;
+            } catch (ParserException $e) {
+                $output->writeln("<error>Parser error: {$e->getMessage()}</error>");
+                return Command::FAILURE;
+            } catch (\Throwable $e) {
+                $output->writeln("<error>Unexpected error: {$e->getMessage()}</error>");
+                return Command::FAILURE;
+            }
+        })
+        ->run();
+})();
