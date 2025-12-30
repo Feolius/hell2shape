@@ -2,9 +2,9 @@
 
 namespace App\Generator;
 
-enum KeyQuotingStyle
+enum KeyQuotingStyle: string
 {
-    case NoQuotes;
-    case SingleQuotes;
-    case DoubleQuotes;
+    case NoQuotes = 'none';
+    case SingleQuotes = 'single';
+    case DoubleQuotes = 'double';
 }

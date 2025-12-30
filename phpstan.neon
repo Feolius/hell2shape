@@ -2,6 +2,7 @@ parameters:
 	level: 8
 	paths:
 		- src
+		- bin/hell2shape
 	ignoreErrors:
 	typeAliases:
 		Langcode: '"en"|"de"|"es"|"fr"|"ko"|"ru"|"zh-hans"'

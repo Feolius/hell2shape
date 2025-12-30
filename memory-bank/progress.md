@@ -31,15 +31,23 @@
   - Integer key formatting rule: always without quotes regardless of KeyQuotingStyle
   - Added tests for integer key formatting behavior
   - Total: 69 tests passing (9 Lexer + 55 Generator + 5 Formatting)
+- **CLI interface implementation** (bin/hell2shape):
+  - Symfony SingleCommandApplication for streamlined interface
+  - Version 0.1.0
+  - STDIN input handling for piping var_dump output
+  - `--indent/-i` option for configurable indentation (default: 4)
+  - `--quotes` option for key quoting style (none, single, double)
+  - Comprehensive error handling (empty input, invalid options, lexer/parser errors)
+  - User-friendly help text with usage examples
+  - Complete pipeline: STDIN → Lexer → Parser → Generator → STDOUT
 
 ## In Progress
-- CLI interface implementation
+- End-to-end integration testing
 
 ## Next Milestones
-1. Create CLI interface with Symfony Console
-2. Add end-to-end integration tests
+1. Write user documentation
+2. Package for distribution (Composer, PHAR)
 3. Set up CI/CD pipeline
-4. Write user documentation
 
 ## Known Issues
 None currently - all components tested and working

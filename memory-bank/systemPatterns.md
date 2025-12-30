@@ -46,12 +46,29 @@
      * **Integer key rule**: Integer keys always output without quotes, regardless of KeyQuotingStyle
      * String keys respect KeyQuotingStyle (NoQuotes, SingleQuotes, DoubleQuotes)
 
+4. CLI Interface:
+   - Symfony SingleCommandApplication for streamlined single-command tool
+   - STDIN input handling for piping var_dump output
+   - Command-line options:
+     * `--indent/-i`: Configurable indentation size (default: 4)
+     * `--quotes`: Key quoting style selection (none, single, double)
+   - Comprehensive error handling:
+     * Empty input validation with usage examples
+     * Option validation (indent must be non-negative integer)
+     * Quoting style validation with available options
+     * Pipeline error handling (LexerException, ParserException, generic errors)
+   - User-friendly help text and error messages
+
 ## Data Flow
-1. var_dump → Lexer → Parser → TypeGeneratorVisitor → Type IR
-2. Type IR → TypeFormatterVisitor → formatted string
-3. Each component handles its own error cases
-4. AST nodes implement accept() for NodeVisitorInterface
-5. Type IR implements accept() for TypeVisitorInterface
+1. STDIN → var_dump text input
+2. var_dump → Lexer → tokens
+3. tokens → Parser → AST
+4. AST → TypeGeneratorVisitor → Type IR
+5. Type IR → TypeFormatterVisitor → formatted string
+6. formatted string → STDOUT
+7. Each component handles its own error cases
+8. AST nodes implement accept() for NodeVisitorInterface
+9. Type IR implements accept() for TypeVisitorInterface
 
 ## Key Design Decisions
 - Strict separation of lexical analysis, parsing and generation
