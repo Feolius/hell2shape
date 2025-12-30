@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Generator\Type;
+namespace Feolius\Hell2Shape\Generator\Type;
 
-use App\Generator\GeneratorConfig;
-use App\Generator\KeyQuotingStyle;
+use Feolius\Hell2Shape\Generator\GeneratorConfig;
+use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
 
 /**
  * @implements TypeVisitorInterface<string>

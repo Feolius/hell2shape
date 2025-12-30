@@ -2,9 +2,9 @@
 
 namespace App\Tests\Lexer;
 
-use App\Lexer\Lexer;
-use App\Lexer\Token;
-use App\Tests\VarDumper;
+use Feolius\Hell2Shape\Lexer\Lexer;
+use Feolius\Hell2Shape\Lexer\Token;
+use Feolius\Hell2Shape\Tests\VarDumper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -59,7 +59,7 @@ class Inherited extends BBвап
     }
 }
 
-#[CoversClass(\App\Lexer\Lexer::class)]
+#[CoversClass(\Feolius\Hell2Shape\Lexer\Lexer::class)]
 class LexerTest extends TestCase
 {
     #[DataProvider('sequenceDataProvider')]

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generator\Type;
+namespace Feolius\Hell2Shape\Generator\Type;
 
 /**
  * @template R

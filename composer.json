@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "Feolius\\Hell2Shape\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Feolius\\Hell2Shape\\Tests\\": "tests/"
         }
     }
 }

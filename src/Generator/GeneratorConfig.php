@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generator;
+namespace Feolius\Hell2Shape\Generator;
 
 final readonly class GeneratorConfig
 {

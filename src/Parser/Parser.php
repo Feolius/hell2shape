@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Parser;
+namespace Feolius\Hell2Shape\Parser;
 
-use App\Lexer\Lexer;
-use App\Lexer\Token;
-use App\Parser\Node\AbstractNode;
-use App\Parser\Node\AnonymousObjectNode;
-use App\Parser\Node\BoolNode;
-use App\Parser\Node\FloatNode;
-use App\Parser\Node\HashmapItemNode;
-use App\Parser\Node\HashmapNode;
-use App\Parser\Node\IntNode;
-use App\Parser\Node\ListItemNode;
-use App\Parser\Node\ListNode;
-use App\Parser\Node\NullNode;
-use App\Parser\Node\ObjectNode;
-use App\Parser\Node\ResourceNode;
-use App\Parser\Node\StdObjectItemNode;
-use App\Parser\Node\StdObjectNode;
-use App\Parser\Node\StringNode;
+use Feolius\Hell2Shape\Lexer\Lexer;
+use Feolius\Hell2Shape\Lexer\Token;
+use Feolius\Hell2Shape\Parser\Node\AbstractNode;
+use Feolius\Hell2Shape\Parser\Node\AnonymousObjectNode;
+use Feolius\Hell2Shape\Parser\Node\BoolNode;
+use Feolius\Hell2Shape\Parser\Node\FloatNode;
+use Feolius\Hell2Shape\Parser\Node\HashmapItemNode;
+use Feolius\Hell2Shape\Parser\Node\HashmapNode;
+use Feolius\Hell2Shape\Parser\Node\IntNode;
+use Feolius\Hell2Shape\Parser\Node\ListItemNode;
+use Feolius\Hell2Shape\Parser\Node\ListNode;
+use Feolius\Hell2Shape\Parser\Node\NullNode;
+use Feolius\Hell2Shape\Parser\Node\ObjectNode;
+use Feolius\Hell2Shape\Parser\Node\ResourceNode;
+use Feolius\Hell2Shape\Parser\Node\StdObjectItemNode;
+use Feolius\Hell2Shape\Parser\Node\StdObjectNode;
+use Feolius\Hell2Shape\Parser\Node\StringNode;
 
 final class Parser
 {

@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Generator;
+namespace Feolius\Hell2Shape\Generator;
 
-use App\Generator\Type\HashmapKey;
-use App\Generator\Type\HashmapType;
-use App\Generator\Type\ListType;
-use App\Generator\Type\ScalarType;
-use App\Generator\Type\StdObjectKey;
-use App\Generator\Type\StdObjectType;
-use App\Generator\Type\TypeInterface;
-use App\Parser\Node\AnonymousObjectNode;
-use App\Parser\Node\BoolNode;
-use App\Parser\Node\FloatNode;
-use App\Parser\Node\HashmapItemNode;
-use App\Parser\Node\HashmapNode;
-use App\Parser\Node\IntNode;
-use App\Parser\Node\ListNode;
-use App\Parser\Node\NodeVisitorInterface;
-use App\Parser\Node\NullNode;
-use App\Parser\Node\ObjectNode;
-use App\Parser\Node\ResourceNode;
-use App\Parser\Node\StdObjectItemNode;
-use App\Parser\Node\StdObjectNode;
-use App\Parser\Node\StringNode;
+use Feolius\Hell2Shape\Generator\Type\HashmapKey;
+use Feolius\Hell2Shape\Generator\Type\HashmapType;
+use Feolius\Hell2Shape\Generator\Type\ListType;
+use Feolius\Hell2Shape\Generator\Type\ScalarType;
+use Feolius\Hell2Shape\Generator\Type\StdObjectKey;
+use Feolius\Hell2Shape\Generator\Type\StdObjectType;
+use Feolius\Hell2Shape\Generator\Type\TypeInterface;
+use Feolius\Hell2Shape\Parser\Node\AnonymousObjectNode;
+use Feolius\Hell2Shape\Parser\Node\BoolNode;
+use Feolius\Hell2Shape\Parser\Node\FloatNode;
+use Feolius\Hell2Shape\Parser\Node\HashmapItemNode;
+use Feolius\Hell2Shape\Parser\Node\HashmapNode;
+use Feolius\Hell2Shape\Parser\Node\IntNode;
+use Feolius\Hell2Shape\Parser\Node\ListNode;
+use Feolius\Hell2Shape\Parser\Node\NodeVisitorInterface;
+use Feolius\Hell2Shape\Parser\Node\NullNode;
+use Feolius\Hell2Shape\Parser\Node\ObjectNode;
+use Feolius\Hell2Shape\Parser\Node\ResourceNode;
+use Feolius\Hell2Shape\Parser\Node\StdObjectItemNode;
+use Feolius\Hell2Shape\Parser\Node\StdObjectNode;
+use Feolius\Hell2Shape\Parser\Node\StringNode;
 
 /**
  * Visitor that generates Type IR from AST nodes.

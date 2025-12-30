@@ -1,13 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-use App\Generator\Generator;
-use App\Generator\GeneratorConfig;
-use App\Generator\KeyQuotingStyle;
-use App\Lexer\Lexer;
-use App\Lexer\LexerException;
-use App\Parser\Parser;
-use App\Parser\ParserException;
+use Feolius\Hell2Shape\Generator\Generator;
+use Feolius\Hell2Shape\Generator\GeneratorConfig;
+use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
+use Feolius\Hell2Shape\Lexer\Lexer;
+use Feolius\Hell2Shape\Lexer\LexerException;
+use Feolius\Hell2Shape\Parser\Parser;
+use Feolius\Hell2Shape\Parser\ParserException;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Generator;
+namespace Feolius\Hell2Shape\Tests\Generator;
 
-use App\Generator\Generator;
-use App\Generator\GeneratorConfig;
-use App\Generator\KeyQuotingStyle;
-use App\Lexer\Lexer;
-use App\Parser\Parser;
+use Feolius\Hell2Shape\Generator\Generator;
+use Feolius\Hell2Shape\Generator\GeneratorConfig;
+use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
+use Feolius\Hell2Shape\Lexer\Lexer;
+use Feolius\Hell2Shape\Parser\Parser;
 use PHPUnit\Framework\TestCase;
 
 final class FormattingTest extends TestCase

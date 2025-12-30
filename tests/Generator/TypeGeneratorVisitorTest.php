@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Generator;
+namespace Feolius\Hell2Shape\Tests\Generator;
 
-use App\Generator\KeyQuotingStyle;
-use App\Generator\TypeGeneratorVisitor;
-use App\Lexer\Lexer;
-use App\Parser\Parser;
+use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
+use Feolius\Hell2Shape\Generator\TypeGeneratorVisitor;
+use Feolius\Hell2Shape\Lexer\Lexer;
+use Feolius\Hell2Shape\Parser\Parser;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Tests\Generator\Type;
+namespace Feolius\Hell2Shape\Tests\Generator\Type;
 
-use App\Generator\Type\HashmapKey;
-use App\Generator\Type\HashmapType;
-use App\Generator\Type\ListType;
-use App\Generator\Type\ScalarType;
-use App\Generator\Type\StdObjectType;
-use App\Generator\Type\UnionType;
+use Feolius\Hell2Shape\Generator\Type\HashmapKey;
+use Feolius\Hell2Shape\Generator\Type\HashmapType;
+use Feolius\Hell2Shape\Generator\Type\ListType;
+use Feolius\Hell2Shape\Generator\Type\ScalarType;
+use Feolius\Hell2Shape\Generator\Type\StdObjectType;
+use Feolius\Hell2Shape\Generator\Type\UnionType;
 use PHPUnit\Framework\TestCase;
 
 final class UnionTypeTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Parser\Node;
+namespace Feolius\Hell2Shape\Parser\Node;
 
 final readonly class ListItemNode extends AbstractNode
 {

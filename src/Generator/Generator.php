@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Generator;
+namespace Feolius\Hell2Shape\Generator;
 
-use App\Parser\Node\AbstractNode;
+use Feolius\Hell2Shape\Parser\Node\AbstractNode;
 
 final readonly class Generator
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Lexer;
+namespace Feolius\Hell2Shape\Lexer;
 
 class LexerException extends \Exception
 {

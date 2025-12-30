@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace Feolius\Hell2Shape\Tests;
 
 final class VarDumper
 {

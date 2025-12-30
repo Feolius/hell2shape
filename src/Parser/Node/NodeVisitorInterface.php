@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Parser\Node;
+namespace Feolius\Hell2Shape\Parser\Node;
 
 /**
  * Generic visitor interface for traversing the AST.

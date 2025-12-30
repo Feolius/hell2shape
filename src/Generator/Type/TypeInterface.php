@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Generator\Type;
+namespace Feolius\Hell2Shape\Generator\Type;
 
-use App\Generator\GeneratorException;
+use Feolius\Hell2Shape\Generator\GeneratorException;
 
 interface TypeInterface
 {
