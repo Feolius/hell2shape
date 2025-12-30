@@ -1,6 +1,17 @@
 {
     "name": "feolius/hell2shape",
+    "description": "Generate PHPStan type annotations from var_dump output",
+    "keywords": ["phpstan", "var_dump", "type-annotations", "static-analysis"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Strygin",
+            "email": "feolius@gmail.com"
+        }
+    ],
+    "bin": ["bin/hell2shape"],
     "require": {
+        "php": "^8.4",
         "symfony/polyfill": "^1.33",
         "symfony/console": "^8.0"
     },
