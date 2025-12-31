@@ -2,21 +2,18 @@
 
 This document describes how to create a new release of hell2shape.
 
-## Automated Release Workflow
+## Manual Release Workflow
 
-The project uses GitHub Actions to automatically manage version numbers. When you push a new git tag, the workflow will:
-
-1. Extract the version number from the tag
-2. Generate `src/Version.php` with the version and release date
-3. Commit the updated file back to the repository
+The project uses GitHub Actions with manual workflow dispatch to manage version numbers. This gives you full control over when releases are created.
 
 ## Creating a New Release
 
 ### 1. Ensure Everything is Ready
 
 ```bash
-# Make sure all changes are committed
+# Make sure all changes are committed and pushed
 git status
+git push origin main
 
 # Run tests to ensure everything works
 vendor/bin/phpunit
@@ -28,21 +25,23 @@ vendor/bin/phpstan analyse
 vendor/bin/ecs check
 ```
 
-### 2. Create and Push a Git Tag
+### 2. Trigger the Release Workflow on GitHub
 
-```bash
-# Create a new tag (e.g., for version 0.2.0)
-git tag -a v0.2.0 -m "Release version 0.2.0"
-
-# Push the tag to GitHub
-git push origin v0.2.0
-```
+1. Go to your repository on GitHub
+2. Click on the **"Actions"** tab
+3. Select **"Release"** workflow from the left sidebar
+4. Click **"Run workflow"** button (top right)
+5. Fill in the required fields:
+   - **Version number**: Enter the version (e.g., `0.2.0` - **without** the `v` prefix)
+   - **Release message**: Enter a description of the release (e.g., "Add new formatting options")
+6. Click **"Run workflow"** to start
 
 ### 3. GitHub Actions Takes Over
 
 The workflow (`.github/workflows/release.yml`) will automatically:
-- Generate `src/Version.php` with version `0.2.0`
-- Commit the file back to the main branch
+- Generate `src/Version.php` with the specified version and current date
+- Commit the file to the main branch with message "Release vX.Y.Z"
+- Create and push a git tag `vX.Y.Z`
 
 ### 4. Packagist Updates Automatically
 
@@ -85,15 +84,18 @@ If the GitHub Actions workflow fails:
 
 1. Check the workflow logs in the "Actions" tab on GitHub
 2. Ensure you have the correct permissions set in the workflow file
-3. Verify the tag format is correct (must start with `v`)
+3. Verify you entered the version number correctly (without `v` prefix)
+4. Make sure the main branch is up to date
+5. Ensure both version and message fields are filled in
 
 ### Version Not Updated
 
-If the version doesn't update after pushing a tag:
+If the version doesn't update after running the workflow:
 
-1. Check that the workflow ran successfully
+1. Check that the workflow ran successfully in the Actions tab
 2. Pull the latest changes: `git pull origin main`
 3. Verify `src/Version.php` was updated
+4. Check that the git tag was created: `git fetch --tags && git tag -l`
 
 ### Packagist Not Updating
 

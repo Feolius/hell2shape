@@ -1,15 +1,15 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Tag to simulate (e.g., v1.2.3)'
+      version:
+        description: 'Version number (e.g., 1.2.3 without v prefix)'
         required: true
-        default: 'v1.2.3-test'
+        type: string
+      message:
+        description: 'Release message/description'
+        required: true
         type: string
 
 jobs:
@@ -25,19 +25,9 @@ jobs:
         with:
           ref: main
 
-      - name: Get version from tag
-        id: version
-        run: |
-          if [ -n "${{ github.event.inputs.tag }}" ]; then
-            GITHUB_REF="refs/tags/${{ github.event.inputs.tag }}"
-          fi
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "Release version: $VERSION"
-
       - name: Generate Version.php
         run: |
-          VERSION="${{ steps.version.outputs.VERSION }}"
+          VERSION="${{ github.event.inputs.version }}"
           RELEASE_DATE=$(date +%Y-%m-%d)
           cat > src/Version.php << EOF
           <?php
@@ -63,5 +53,6 @@ jobs:
       - name: Commit Version.php
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: Update Release Info
-      
+          commit_message: Release v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.version }}
+          tagging_message: ${{ github.event.inputs.message }}
