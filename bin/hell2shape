@@ -8,6 +8,7 @@ use Feolius\Hell2Shape\Lexer\Lexer;
 use Feolius\Hell2Shape\Lexer\LexerException;
 use Feolius\Hell2Shape\Parser\Parser;
 use Feolius\Hell2Shape\Parser\ParserException;
+use Feolius\Hell2Shape\Version;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,7 +55,7 @@ function autoload(): void
 
     new SingleCommandApplication()
         ->setName('hell2shape')
-        ->setVersion('0.1.0')
+        ->setVersion(Version::VERSION)
         ->setDescription('Generate PHPStan typings from var_dump output')
         ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
         ->setCode(function (
