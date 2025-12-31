@@ -4,31 +4,42 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to simulate (e.g., v1.2.3)'
+        required: true
+        default: 'v1.2.3-test'
+        type: string
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           ref: ${{ github.ref }}
-      
+
       - name: Get version from tag
         id: version
         run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            GITHUB_REF="refs/tags/${{ github.event.inputs.tag }}"
+          fi
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Release version: $VERSION"
-      
+
       - name: Generate Version.php
         run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
           RELEASE_DATE=$(date +%Y-%m-%d)
-          cat > src/Version.php << 'EOF'
+          cat > src/Version.php << EOF
           <?php
           
           namespace Feolius\Hell2Shape;
@@ -40,19 +51,15 @@ jobs:
            */
           final class Version
           {
-              public const VERSION = '${{ steps.version.outputs.VERSION }}-dev';
+              public const VERSION = '$VERSION';
           
               public const RELEASE_DATE = '$RELEASE_DATE';
           }
           EOF
           
-          # Replace placeholders
-          sed -i "s/\${{ steps.version.outputs.VERSION }}/${{ steps.version.outputs.VERSION }}/g" src/Version.php
-          sed -i "s/\$RELEASE_DATE/$RELEASE_DATE/g" src/Version.php
-          
           echo "Generated Version.php:"
           cat src/Version.php
-      
+
       - name: Commit Version.php
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
