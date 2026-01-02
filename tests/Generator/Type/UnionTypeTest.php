@@ -5,6 +5,7 @@ namespace Feolius\Hell2Shape\Tests\Generator\Type;
 use Feolius\Hell2Shape\Generator\Type\HashmapKey;
 use Feolius\Hell2Shape\Generator\Type\HashmapType;
 use Feolius\Hell2Shape\Generator\Type\ListType;
+use Feolius\Hell2Shape\Generator\Type\ObjectType;
 use Feolius\Hell2Shape\Generator\Type\ScalarType;
 use Feolius\Hell2Shape\Generator\Type\StdObjectType;
 use Feolius\Hell2Shape\Generator\Type\UnionType;
@@ -501,5 +502,20 @@ final class UnionTypeTest extends TestCase
             'list<array{user: array{profile?: array{name?: string, age?: int}, settings?: array{theme: string}}}>',
             $result
         );
+    }
+
+    public function testDeduplicateMultipleObjectTypes(): void
+    {
+        $user1 = new ObjectType('App\\Models\\User');
+        $user2 = new ObjectType('App\\Models\\User');
+        $user3 = new ObjectType('App\\Models\\User');
+        $post1 = new ObjectType('App\\Models\\Post');
+        $post2 = new ObjectType('App\\Models\\Post');
+        $comment = new ObjectType('App\\Models\\Comment');
+
+        $union = new UnionType([$user1, $post1, $user2, $comment, $post2, $user3]);
+
+        $result = $union->toString();
+        $this->assertSame('App\\Models\\User|App\\Models\\Post|App\\Models\\Comment', $result);
     }
 }

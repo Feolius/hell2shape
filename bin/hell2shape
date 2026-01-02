@@ -77,8 +77,8 @@ function autoload(): void
             string $quotes = KeyQuotingStyle::NoQuotes->value,
             #[Option(
                 description: 'Class name style: uqn (unqualified), qn (qualified), or fqn (fully qualified)',
-                name: 'class-names',
-                shortcut: null,
+                name: 'class',
+                shortcut: 'c',
                 suggestedValues: [
                     ClassNameStyle::Unqualified->value,
                     ClassNameStyle::Qualified->value,
@@ -86,7 +86,7 @@ function autoload(): void
                 ],
             )
             ]
-            string $classNames = ClassNameStyle::Unqualified->value,
+            string $class = ClassNameStyle::Unqualified->value,
         ): int {
             $input = stream_get_contents(STDIN);
             if (empty($input)) {
@@ -112,7 +112,7 @@ function autoload(): void
                 return Command::FAILURE;
             }
 
-            $classNameStyle = ClassNameStyle::tryFrom($classNames);
+            $classNameStyle = ClassNameStyle::tryFrom($class);
             if ($classNameStyle === null) {
                 $classNameOptions = implode(
                     ',',

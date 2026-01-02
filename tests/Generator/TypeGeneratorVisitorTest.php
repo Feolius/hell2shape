@@ -66,6 +66,15 @@ final class TypeGeneratorVisitorTest extends TestCase
                 'object(DateTime)#1 (3) {}',
                 'DateTime',
             ],
+            'namespaced object' => [
+                'object(App\Models\User)#1 (2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "John"
+}',
+                'App\Models\User',
+            ],
             'anonymous object' => [
                 'object(class@anonymous)#1 (0) {}',
                 'object',
@@ -345,6 +354,61 @@ final class TypeGeneratorVisitorTest extends TestCase
   }
 }',
                 'list<object{k1: string, k2?: int}>',
+            ],
+
+            // ObjectType tests
+            'list of objects - same class' => [
+                'array(2) {
+  [0]=>
+  object(App\Models\User)#1 (1) {
+    ["id"]=>
+    int(1)
+  }
+  [1]=>
+  object(App\Models\User)#2 (1) {
+    ["id"]=>
+    int(2)
+  }
+}',
+                'list<App\Models\User>',
+            ],
+
+            'list of objects - different classes create union' => [
+                'array(2) {
+  [0]=>
+  object(App\Models\User)#1 (0) {}
+  [1]=>
+  object(App\Models\Post)#2 (0) {}
+}',
+                'list<App\Models\User|App\Models\Post>',
+            ],
+
+            'hashmap with object values' => [
+                'array(2) {
+  ["user"]=>
+  object(App\Models\User)#1 (1) {
+    ["id"]=>
+    int(1)
+  }
+  ["post"]=>
+  object(App\Models\Post)#2 (1) {
+    ["title"]=>
+    string(5) "Hello"
+  }
+}',
+                'array{user: App\Models\User, post: App\Models\Post}',
+            ],
+
+            'mixed list with objects and scalars' => [
+                'array(3) {
+  [0]=>
+  object(DateTime)#1 (0) {}
+  [1]=>
+  string(5) "hello"
+  [2]=>
+  int(42)
+}',
+                'list<DateTime|string|int>',
             ],
         ];
     }

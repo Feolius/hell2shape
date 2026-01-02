@@ -55,6 +55,8 @@ final readonly class UnionType implements TypeInterface
 
         /** @var array<string, bool> $scalarTypes */
         $scalarTypes = [];
+        /** @var array<string, bool> $scalarTypes */
+        $classNames = [];
         /** @var ?HashmapType $hashMapType */
         $hashMapType = null;
         /** @var ?StdObjectType $stdObjectType */
@@ -69,6 +71,12 @@ final readonly class UnionType implements TypeInterface
                     if (!isset($scalarTypes[$type->getTypeName()])) {
                         $uniqueTypes[] = $type;
                         $scalarTypes[$type->getTypeName()] = true;
+                    }
+                    break;
+                case ObjectType::class:
+                    if (!isset($classNames[$type->className])) {
+                        $uniqueTypes[] = $type;
+                        $classNames[$type->className] = true;
                     }
                     break;
                 case HashmapType::class:
