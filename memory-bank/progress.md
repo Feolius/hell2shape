@@ -37,9 +37,17 @@
   - STDIN input handling for piping var_dump output
   - `--indent/-i` option for configurable indentation (default: 4)
   - `--quotes` option for key quoting style (none, single, double)
+  - `--class/-c` option for class name formatting (uqn, qn, fqn) - default: uqn
   - Comprehensive error handling (empty input, invalid options, lexer/parser errors)
   - User-friendly help text with usage examples
   - Complete pipeline: STDIN → Lexer → Parser → Generator → STDOUT
+- **Class name formatting feature**:
+  - ClassNameStyle enum (Unqualified, Qualified, FullyQualified)
+  - ObjectType class for representing object types (separate from ScalarType)
+  - TypeGeneratorVisitor updated to use ObjectType for regular objects
+  - TypeFormatterVisitor formats class names based on configuration
+  - ObjectType deduplication in UnionType
+  - Comprehensive test coverage: 77 tests passing (9 Lexer + 31 TypeGeneratorVisitor + 9 Formatting + 1 UnionType + 27 other)
 
 ## In Progress
 - End-to-end integration testing

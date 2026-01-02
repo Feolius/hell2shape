@@ -46,6 +46,14 @@
   - `--quotes` option: Key quoting style (none, single, double)
   - Comprehensive error handling for all pipeline stages
   - User-friendly help text with usage examples
+- **Implemented class name formatting feature**:
+  - Created `ClassNameStyle` enum (Unqualified, Qualified, FullyQualified)
+  - Created `ObjectType` class to represent object types (separate from ScalarType)
+  - Updated `TypeGeneratorVisitor` to use `ObjectType` for regular objects
+  - Updated `TypeFormatterVisitor` to format class names based on configuration
+  - Added `ObjectType` deduplication support in `UnionType`
+  - CLI option: `--class/-c` (uqn, qn, fqn) - default: uqn
+  - Comprehensive test coverage in FormattingTest, UnionTypeTest, and TypeGeneratorVisitorTest
 
 ## Type IR Architecture
 - **Three-phase generation**: AST → Type IR → Formatter → String
@@ -75,12 +83,20 @@
 - **Options**:
   - `--indent/-i <size>`: Indentation size (0 for single-line, default: 4)
   - `--quotes <style>`: Key quoting style (none, single, double) - no shortcut
+  - `--class/-c <style>`: Class name style (uqn, qn, fqn) - default: uqn
+    - `uqn` (unqualified): Just class name (e.g., `User`)
+    - `qn` (qualified): With namespace (e.g., `App\Models\User`)
+    - `fqn` (fully qualified): With leading backslash (e.g., `\App\Models\User`)
 - **Error Handling**:
   - Empty input validation with helpful usage example
   - Indent validation (must be non-negative integer)
   - Quoting style validation with available options
+  - Class name style validation with available options
   - LexerException, ParserException, and generic error catching
-- **Usage Example**: `php -r 'var_dump($data);' | bin/hell2shape`
+- **Usage Examples**: 
+  - `php -r 'var_dump($data);' | bin/hell2shape`
+  - `php -r 'var_dump($data);' | bin/hell2shape --class=fqn`
+  - `php -r 'var_dump($data);' | bin/hell2shape -c qn -i 2`
 
 ## Immediate Next Steps
 1. Add end-to-end integration tests for CLI

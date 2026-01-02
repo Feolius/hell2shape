@@ -28,6 +28,7 @@
      * TypeVisitorInterface: Generic visitor for operations on Type IR
      * TypeFormatterVisitor: Handles all formatting logic
      * ScalarType: Non-mergeable types (int, string, bool, etc.)
+     * ObjectType: Represents object types with class names (non-mergeable, deduplicates in unions)
      * UnionType: Automatic deduplication of union members
      * HashmapType: Mergeable array shapes with optional key support (immutable)
      * StdObjectType: Mergeable stdClass objects (immutable)
@@ -52,10 +53,12 @@
    - Command-line options:
      * `--indent/-i`: Configurable indentation size (default: 4)
      * `--quotes`: Key quoting style selection (none, single, double)
+     * `--class/-c`: Class name style selection (uqn, qn, fqn) - default: uqn
    - Comprehensive error handling:
      * Empty input validation with usage examples
      * Option validation (indent must be non-negative integer)
      * Quoting style validation with available options
+     * Class name style validation with available options
      * Pipeline error handling (LexerException, ParserException, generic errors)
    - User-friendly help text and error messages
 
