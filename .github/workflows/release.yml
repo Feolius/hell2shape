@@ -49,5 +49,5 @@ jobs:
       - name: Commit Version.php
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: Release v${{ github.event.inputs.version }}
-          tag_name: v${{ github.event.inputs.version }}
+          commit_message: Release ${{ github.event.inputs.version }}
+          tag_name: ${{ github.event.inputs.version }}
