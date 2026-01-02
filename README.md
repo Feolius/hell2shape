@@ -84,6 +84,23 @@ hell2shape --quotes=double
 # Output: array{"name": string}
 ```
 
+### `--class` / `-c`
+Control how class names are formatted (default: unqualified)
+
+```bash
+# Unqualified - just the class name (default)
+hell2shape --class=uqn
+# Output: User
+
+# Qualified - with namespace
+hell2shape -c qn
+# Output: App\Models\User
+
+# Fully qualified - with leading backslash
+hell2shape --class=fqn
+# Output: \App\Models\User
+```
+
 ## Features
 
 - ✅ Scalar types (int, string, bool, float, null)
@@ -141,6 +158,33 @@ array{
     name: string,
     email?: string
 }
+```
+
+### Object Types
+```bash
+php -r 'namespace App\Models; class User {} var_dump(new User());' | hell2shape
+```
+Output (default - unqualified):
+```php
+User
+```
+
+With qualified names:
+```bash
+php -r 'namespace App\Models; class User {} var_dump(new User());' | hell2shape -c qn
+```
+Output:
+```php
+App\Models\User
+```
+
+With fully qualified names:
+```bash
+php -r 'namespace App\Models; class User {} var_dump(new User());' | hell2shape --class=fqn
+```
+Output:
+```php
+\App\Models\User
 ```
 
 ## Limitations
