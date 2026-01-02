@@ -5,6 +5,7 @@ namespace Feolius\Hell2Shape\Generator;
 use Feolius\Hell2Shape\Generator\Type\HashmapKey;
 use Feolius\Hell2Shape\Generator\Type\HashmapType;
 use Feolius\Hell2Shape\Generator\Type\ListType;
+use Feolius\Hell2Shape\Generator\Type\ObjectType;
 use Feolius\Hell2Shape\Generator\Type\ScalarType;
 use Feolius\Hell2Shape\Generator\Type\StdObjectKey;
 use Feolius\Hell2Shape\Generator\Type\StdObjectType;
@@ -63,7 +64,7 @@ final class TypeGeneratorVisitor implements NodeVisitorInterface
 
     public function visitObject(ObjectNode $node): TypeInterface
     {
-        return new ScalarType($node->className);
+        return new ObjectType($node->className);
     }
 
     public function visitAnonymousObject(AnonymousObjectNode $node): TypeInterface

@@ -2,6 +2,7 @@
 
 namespace Feolius\Hell2Shape\Generator\Type;
 
+use Feolius\Hell2Shape\Generator\ClassNameStyle;
 use Feolius\Hell2Shape\Generator\GeneratorConfig;
 use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
 
@@ -45,6 +46,11 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
     public function visitStdObjectType(StdObjectType $type): string
     {
         return $this->formatStructure('object', $type->keys);
+    }
+
+    public function visitObjectType(ObjectType $type): string
+    {
+        return $this->formatClassName($type->className);
     }
 
     /**
@@ -95,6 +101,15 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
             KeyQuotingStyle::SingleQuotes => "'{$name}'",
             KeyQuotingStyle::DoubleQuotes => "\"{$name}\"",
             KeyQuotingStyle::NoQuotes => $name,
+        };
+    }
+
+    private function formatClassName(string $className): string
+    {
+        return match ($this->config->classNameStyle) {
+            ClassNameStyle::Unqualified => array_last(explode('\\', $className)),
+            ClassNameStyle::Qualified => $className,
+            ClassNameStyle::FullyQualified => '\\'.$className,
         };
     }
 }

@@ -31,4 +31,9 @@ interface TypeVisitorInterface
      * @return R
      */
     public function visitListType(ListType $type): mixed;
+
+    /**
+     * @return R
+     */
+    public function visitObjectType(ObjectType $type): mixed;
 }

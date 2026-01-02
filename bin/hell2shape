@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Feolius\Hell2Shape\Generator\ClassNameStyle;
 use Feolius\Hell2Shape\Generator\Generator;
 use Feolius\Hell2Shape\Generator\GeneratorConfig;
 use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
@@ -74,6 +75,18 @@ function autoload(): void
             )
             ]
             string $quotes = KeyQuotingStyle::NoQuotes->value,
+            #[Option(
+                description: 'Class name style: uqn (unqualified), qn (qualified), or fqn (fully qualified)',
+                name: 'class-names',
+                shortcut: null,
+                suggestedValues: [
+                    ClassNameStyle::Unqualified->value,
+                    ClassNameStyle::Qualified->value,
+                    ClassNameStyle::FullyQualified->value,
+                ],
+            )
+            ]
+            string $classNames = ClassNameStyle::Unqualified->value,
         ): int {
             $input = stream_get_contents(STDIN);
             if (empty($input)) {
@@ -99,7 +112,17 @@ function autoload(): void
                 return Command::FAILURE;
             }
 
-            $config = new GeneratorConfig($quotingStyle, $indent);
+            $classNameStyle = ClassNameStyle::tryFrom($classNames);
+            if ($classNameStyle === null) {
+                $classNameOptions = implode(
+                    ',',
+                    array_map(fn(ClassNameStyle $s) => $s->value, ClassNameStyle::cases())
+                );
+                $output->writeln("<error>Invalid class name style. Must be one of: {$classNameOptions}</error>");
+                return Command::FAILURE;
+            }
+
+            $config = new GeneratorConfig($quotingStyle, $indent, $classNameStyle);
             try {
                 $lexer = new Lexer();
                 $tokens = $lexer->tokenize($input);
