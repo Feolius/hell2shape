@@ -31,9 +31,8 @@ vendor/bin/ecs check
 2. Click on the **"Actions"** tab
 3. Select **"Release"** workflow from the left sidebar
 4. Click **"Run workflow"** button (top right)
-5. Fill in the required fields:
+5. Fill in the required field:
    - **Version number**: Enter the version (e.g., `0.2.0` - **without** the `v` prefix)
-   - **Release message**: Enter a description of the release (e.g., "Add new formatting options")
 6. Click **"Run workflow"** to start
 
 ### 3. GitHub Actions Takes Over
@@ -43,7 +42,25 @@ The workflow (`.github/workflows/release.yml`) will automatically:
 - Commit the file to the main branch with message "Release vX.Y.Z"
 - Create and push a git tag `vX.Y.Z`
 
-### 4. Packagist Updates Automatically
+### 4. Create a GitHub Release (Optional but Recommended)
+
+After the workflow completes:
+
+1. Go to your repository on GitHub
+2. Click on **"Releases"** in the right sidebar (or go to `/releases`)
+3. Click **"Draft a new release"**
+4. Select the tag that was just created (e.g., `v0.2.0`)
+5. Add a release title (e.g., "Version 0.2.0")
+6. Write release notes describing:
+   - New features
+   - Bug fixes
+   - Breaking changes
+   - Any other relevant information
+7. Click **"Publish release"**
+
+This creates a formal release on GitHub with your detailed release notes, making it easier for users to understand what changed.
+
+### 5. Packagist Updates Automatically
 
 If you've set up the Packagist webhook (recommended), the new version will be available on Packagist within minutes.
 
@@ -86,7 +103,6 @@ If the GitHub Actions workflow fails:
 2. Ensure you have the correct permissions set in the workflow file
 3. Verify you entered the version number correctly (without `v` prefix)
 4. Make sure the main branch is up to date
-5. Ensure both version and message fields are filled in
 
 ### Version Not Updated
 
