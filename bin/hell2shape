@@ -54,7 +54,7 @@ function autoload(): void
 (static function (): void {
     autoload();
 
-    new SingleCommandApplication()
+    (new SingleCommandApplication())
         ->setName('hell2shape')
         ->setVersion(Version::VERSION)
         ->setDescription('Generate PHPStan typings from var_dump output')
@@ -88,7 +88,12 @@ function autoload(): void
             ]
             string $class = ClassNameStyle::Unqualified->value,
         ): int {
-            $input = stream_get_contents(STDIN);
+            $stdin = fopen('php://stdin', 'r');
+            if ($stdin === false) {
+                $output->writeln('<error>STDIN is not available</error>');
+                return Command::FAILURE;
+            }
+            $input = stream_get_contents($stdin);
             if (empty($input)) {
                 $output->writeln('<error>No input provided. Please pipe var_dump output to this command.</error>');
                 $output->writeln('');

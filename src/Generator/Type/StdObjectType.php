@@ -2,21 +2,23 @@
 
 namespace Feolius\Hell2Shape\Generator\Type;
 
-final class StdObjectType implements TypeInterface
+final readonly class StdObjectType implements TypeInterface
 {
     /**
      * @var array<string, StdObjectKey>
      */
-    public private(set) array $keys = [];
+    public array $keys;
 
     /**
      * @param  list<StdObjectKey>  $keys
      */
     public function __construct(array $keys)
     {
+        $keysByName = [];
         foreach ($keys as $key) {
-            $this->keys[$key->name] = $key;
+            $keysByName[$key->name] = $key;
         }
+        $this->keys = $keysByName;
     }
 
     public function merge(TypeInterface $other): UnionType|static

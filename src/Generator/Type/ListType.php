@@ -5,7 +5,7 @@ namespace Feolius\Hell2Shape\Generator\Type;
 final readonly class ListType implements TypeInterface
 {
     public function __construct(
-        private(set) TypeInterface $elementType
+        public TypeInterface $elementType
     ) {
     }
 

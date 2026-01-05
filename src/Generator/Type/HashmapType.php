@@ -2,21 +2,23 @@
 
 namespace Feolius\Hell2Shape\Generator\Type;
 
-final class HashmapType implements TypeInterface
+final readonly class HashmapType implements TypeInterface
 {
     /**
      * @var array<string|int, HashmapKey>
      */
-    public private(set) array $keys = [];
+    public array $keys;
 
     /**
      * @param  list<HashmapKey>  $keys
      */
     public function __construct(array $keys)
     {
+        $keysByName = [];
         foreach ($keys as $key) {
-            $this->keys[$key->name] = $key;
+            $keysByName[$key->name] = $key;
         }
+        $this->keys = $keysByName;
     }
 
     public function merge(TypeInterface $other): UnionType|static

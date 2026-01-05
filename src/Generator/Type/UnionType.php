@@ -9,7 +9,7 @@ final readonly class UnionType implements TypeInterface
     /**
      * @var list<TypeInterface>
      */
-    public private(set) array $types;
+    public array $types;
 
     /**
      * @param  list<TypeInterface>  $types

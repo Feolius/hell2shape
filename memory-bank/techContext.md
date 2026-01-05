@@ -1,7 +1,7 @@
 # Technology Stack
 
 ## Core Dependencies
-- PHP 8.4+
+- PHP 8.3+
 - symfony/console (CLI interface)
 - yiisoft/di (dependency injection)
 
