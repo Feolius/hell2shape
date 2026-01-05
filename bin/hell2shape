@@ -44,9 +44,12 @@ function autoload(): void
     }
 
     if (!$autoloadFound) {
-        $message = "Unable to find Composer autoload file.\n\n";
-        $message .= '- '.\implode("\n- ", $autoloadPaths)."\n\n";
-        fwrite(STDERR, $message);
+        $stderr = fopen('php://stderr', 'w');
+        if ($stderr) {
+            $message = "Unable to find Composer autoload file.\n\n";
+            $message .= '- '.\implode("\n- ", $autoloadPaths)."\n\n";
+            fwrite($stderr, $message);
+        }
         exit(1);
     }
 }
