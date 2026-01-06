@@ -12,8 +12,10 @@ use Feolius\Hell2Shape\Parser\ParserException;
 use Feolius\Hell2Shape\Version;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 function autoload(): void
 {
@@ -63,7 +65,7 @@ function autoload(): void
         ->setDescription('Generate PHPStan typings from var_dump output')
         ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
         ->setCode(function (
-            OutputInterface $output,
+                SymfonyStyle $io,
             #[Option(description: 'Indentation size (use 0 for single-line output)', name: 'indent', shortcut: 'i')]
             string $indent = '4',
             #[Option(
@@ -93,20 +95,21 @@ function autoload(): void
         ): int {
             $stdin = fopen('php://stdin', 'r');
             if ($stdin === false) {
-                $output->writeln('<error>STDIN is not available</error>');
+                $io->getErrorStyle()->error('STDIN is not available');
                 return Command::FAILURE;
             }
-            $input = stream_get_contents($stdin);
+            $input = trim(stream_get_contents($stdin));
             if (empty($input)) {
-                $output->writeln('<error>No input provided. Please pipe var_dump output to this command.</error>');
-                $output->writeln('');
-                $output->writeln('Example: php -r \'var_dump($data);\' | bin/hell2shape');
+                $io->getErrorStyle()->error([
+                        'No input provided. Please pipe var_dump output to this command.',
+                        'Example: php -r \'var_dump($data);\' | bin/hell2shape'
+                ]);
                 return Command::FAILURE;
             }
 
             $indent = filter_var($indent, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
             if ($indent === false) {
-                $output->writeln('<error>Indent option must be non-negative integer.</error>');
+                $io->getErrorStyle()->error('Indent option must be non-negative integer.');
                 return Command::FAILURE;
             }
 
@@ -116,7 +119,7 @@ function autoload(): void
                     ',',
                     array_map(fn(KeyQuotingStyle $s) => $s->value, KeyQuotingStyle::cases())
                 );
-                $output->writeln("<error>Invalid quoting style. Must be one of: {$quotingOptions}</error>");
+                $io->getErrorStyle()->error("Invalid quoting style. Must be one of: {$quotingOptions}");
                 return Command::FAILURE;
             }
 
@@ -126,7 +129,7 @@ function autoload(): void
                     ',',
                     array_map(fn(ClassNameStyle $s) => $s->value, ClassNameStyle::cases())
                 );
-                $output->writeln("<error>Invalid class name style. Must be one of: {$classNameOptions}</error>");
+                $io->getErrorStyle()->error("Invalid class name style. Must be one of: {$classNameOptions}");
                 return Command::FAILURE;
             }
 
@@ -141,16 +144,16 @@ function autoload(): void
                 $generator = new Generator($config);
                 $result = $generator->generate($ast);
 
-                $output->writeln($result);
+                $io->writeln($result);
                 return Command::SUCCESS;
             } catch (LexerException $e) {
-                $output->writeln("<error>{$e->getMessage()}</error>");
+                $io->getErrorStyle()->error("Lexer error: {$e->getMessage()}");
                 return Command::FAILURE;
             } catch (ParserException $e) {
-                $output->writeln("<error>Parser error: {$e->getMessage()}</error>");
+                $io->getErrorStyle()->error("Parser error: {$e->getMessage()}");
                 return Command::FAILURE;
             } catch (\Throwable $e) {
-                $output->writeln("<error>Unexpected error: {$e->getMessage()}</error>");
+                $io->getErrorStyle()->error("Unexpected error: {$e->getMessage()}");
                 return Command::FAILURE;
             }
         })
