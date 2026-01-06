@@ -173,7 +173,7 @@ final class Parser
     private function parseObject(): ObjectNode
     {
         $token = $this->consume(Lexer::T_OBJECT);
-        preg_match('/object\(([\w\\\\]+)\)/Asui', $token->value, $matches);
+        preg_match('/object\(([\w\\\\]+)\)/Aui', $token->value, $matches);
         $className = $matches[1];
 
         $this->skipObjectInternals();
@@ -225,7 +225,7 @@ final class Parser
     private function parseResource(): ResourceNode
     {
         $token = $this->consume(Lexer::T_RESOURCE);
-        preg_match('/resource\(\d+\) of type \((\w+)\)/', $token->value, $matches);
+        preg_match('/resource\(\d+\) of type \((\w+)\)/Au', $token->value, $matches);
         return new ResourceNode($matches[1]);
     }
 
