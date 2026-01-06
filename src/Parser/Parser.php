@@ -76,7 +76,7 @@ final class Parser
     private function parseInt(): IntNode
     {
         $token = $this->consume(Lexer::T_INT);
-        preg_match('/int\((\d+)\)/', $token->value, $matches);
+        preg_match('/int\((\d+)\)/A', $token->value, $matches);
         return new IntNode((int)$matches[1]);
     }
 
@@ -86,7 +86,7 @@ final class Parser
     private function parseFloat(): FloatNode
     {
         $token = $this->consume(Lexer::T_FLOAT);
-        preg_match('/float\(([\d.]+)\)/', $token->value, $matches);
+        preg_match('/float\(([\d.]+)\)/A', $token->value, $matches);
         return new FloatNode((float)$matches[1]);
     }
 
@@ -96,7 +96,7 @@ final class Parser
     private function parseString(): StringNode
     {
         $token = $this->consume(Lexer::T_STRING);
-        preg_match('/string\(\d+\) "(.+)"/', $token->value, $matches);
+        preg_match('/string\(\d+\) "(.+)"/Asu', $token->value, $matches);
         return new StringNode($matches[1]);
     }
 
@@ -106,7 +106,7 @@ final class Parser
     private function parseBool(): BoolNode
     {
         $token = $this->consume(Lexer::T_BOOL);
-        preg_match('/bool\((true|false)\)/', $token->value, $matches);
+        preg_match('/bool\((true|false)\)/A', $token->value, $matches);
         return new BoolNode($matches[1] === 'true');
     }
 
@@ -173,7 +173,7 @@ final class Parser
     private function parseObject(): ObjectNode
     {
         $token = $this->consume(Lexer::T_OBJECT);
-        preg_match('/object\(([\w\\\\]+)\)/', $token->value, $matches);
+        preg_match('/object\(([\w\\\\]+)\)/Asui', $token->value, $matches);
         $className = $matches[1];
 
         $this->skipObjectInternals();
