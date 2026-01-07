@@ -29,7 +29,7 @@ vendor/bin/ecs check
 
 1. Go to your repository on GitHub
 2. Click on the **"Actions"** tab
-3. Select **"Release"** workflow from the left sidebar
+3. Select **"Create Version Tag"** workflow from the left sidebar
 4. Click **"Run workflow"** button (top right)
 5. Fill in the required field:
    - **Version number**: Enter the version (e.g., `0.2.0` - **without** the `v` prefix)
@@ -42,7 +42,7 @@ The workflow (`.github/workflows/release.yml`) will automatically:
 - Commit the file to the main branch with message "Release vX.Y.Z"
 - Create and push a git tag `vX.Y.Z`
 
-### 4. Create a GitHub Release (Optional but Recommended)
+### 4. Create a GitHub Release
 
 After the workflow completes:
 
@@ -57,8 +57,9 @@ After the workflow completes:
    - Breaking changes
    - Any other relevant information
 7. Click **"Publish release"**
+8. New phar file should be compiled and added into assets. Thanks to *Build Release PHAR* workflow.
 
-This creates a formal release on GitHub with your detailed release notes, making it easier for users to understand what changed.
+This creates a formal release on GitHub with your detailed release notes, making it easier for users to understand what changed. A new PHAR file asset can be used in related projects. 
 
 ### 5. Packagist Updates Automatically
 
