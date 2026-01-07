@@ -1,0 +1,6 @@
+#!/usr/bin/env php
+<?php
+
+Phar::mapPhar('hell2shape.phar');
+require 'phar://hell2shape.phar/bin/hell2shape';
+__HALT_COMPILER();
