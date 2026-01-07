@@ -1,0 +1,31 @@
+name: Build on Release
+
+on:
+    release:
+        types: [ created, published ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v3
+                with:
+                    ref: ${{ github.event.release.tag_name }}
+
+            -   name: Install dependencies
+                uses: php-actions/composer@v6
+                with:
+                    dev: no
+                    php_version: "8.3"
+            -   name: Install Box
+                run: composer global require humbug/box
+            -   name: Build PHAR
+                run: |
+                    ~/.composer/vendor/bin/box compile
+            -   name: Create Release
+                uses: softprops/action-gh-release@v2
+                with:
+                    files: bin/hell2shape.phar
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
