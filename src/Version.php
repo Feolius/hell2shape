@@ -9,7 +9,7 @@ namespace Feolius\Hell2Shape;
  */
 final class Version
 {
-    public const VERSION = '0.3.0-test2';
+    public const VERSION = '0.3.0-test3';
 
     public const RELEASE_DATE = '2026-01-07';
 }
