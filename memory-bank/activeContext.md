@@ -6,7 +6,7 @@
 
 ## Recent Decisions
 - Using Lexer/Parser/Generator architecture
-- PHP 8.4+ as minimum version
+- PHP 8.3+ as minimum version
 - Symfony Console for CLI interface
 - All Node classes are now `readonly` and `final` for immutability
 - Generic visitor pattern with NodeVisitorInterface<R> for extensibility
