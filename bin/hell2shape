@@ -12,8 +12,6 @@ use Feolius\Hell2Shape\Parser\ParserException;
 use Feolius\Hell2Shape\Version;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -65,7 +63,7 @@ function autoload(): void
         ->setDescription('Generate PHPStan typings from var_dump output')
         ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
         ->setCode(function (
-                SymfonyStyle $io,
+            SymfonyStyle $io,
             #[Option(description: 'Indentation size (use 0 for single-line output)', name: 'indent', shortcut: 'i')]
             string $indent = '4',
             #[Option(
@@ -101,8 +99,8 @@ function autoload(): void
             $input = trim(stream_get_contents($stdin));
             if (empty($input)) {
                 $io->getErrorStyle()->error([
-                        'No input provided. Please pipe var_dump output to this command.',
-                        'Example: php -r \'var_dump($data);\' | bin/hell2shape'
+                    'No input provided. Please pipe var_dump output to this command.',
+                    'Example: php -r \'var_dump($data);\' | bin/hell2shape',
                 ]);
                 return Command::FAILURE;
             }
