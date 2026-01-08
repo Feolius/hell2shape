@@ -4,16 +4,13 @@
 
 A CLI tool that analyzes PHP `var_dump()` output and generates PHPStan-compatible type annotations, helping you add type hints to legacy code or complex data structures.
 
-## Try It Online
+## Use It Online
 
-🌐 **[Try hell2shape in your browser](https://hell2shape.netlify.app/)** - No installation required!
+🌐 **[Try hell2shape in your browser](https://hell2shape.netlify.app/)** - No installation required. Works locally in your browser, no data transferred -- thanks to php-wasm.
 
 ## Installation
 
-### Option 1: Try Online (Recommended)
-Visit **[hell2shape.netlify.app](https://hell2shape.netlify.app/)** to use hell2shape directly in your browser without any installation.
-
-### Option 2: Download PHAR (Standalone Executable)
+### Option 1: Download PHAR (Standalone Executable)
 Download the latest `hell2shape.phar` from the [releases page](https://github.com/Feolius/hell2shape/releases) and use it directly:
 
 ```bash
@@ -27,7 +24,7 @@ chmod +x hell2shape.phar
 php -r 'var_dump($myArray);' | ./hell2shape.phar
 ```
 
-### Option 3: Install via Composer
+### Option 2: Install via Composer
 ```bash
 composer require feolius/hell2shape
 ```
@@ -43,6 +40,11 @@ php -r 'var_dump($myArray);' | vendor/bin/hell2shape
 
 # If using PHAR
 php -r 'var_dump($myArray);' | ./hell2shape.phar
+```
+
+### Option 3: Use [cpx](https://cpx.dev/)
+```bash
+php -r 'var_dump($myArray);' | cpx feolius/hell2shape
 ```
 
 ## Usage
@@ -137,7 +139,6 @@ hell2shape --class=fqn
 - ✅ Lists with union types
 - ✅ Complex nested structures
 - ✅ Configurable formatting
-- ✅ Resource types
 
 ## Examples
 
