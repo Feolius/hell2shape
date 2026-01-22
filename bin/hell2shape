@@ -10,8 +10,10 @@ use Feolius\Hell2Shape\Lexer\LexerException;
 use Feolius\Hell2Shape\Parser\Parser;
 use Feolius\Hell2Shape\Parser\ParserException;
 use Feolius\Hell2Shape\Version;
-use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -26,7 +28,8 @@ function autoload(): void
 
     $cwd = \getcwd();
     if ($cwd) {
-        $autoloadPaths = [...$autoloadPaths,
+        $autoloadPaths = [
+            ...$autoloadPaths,
             // running from project root
             $cwd.'/vendor/autoload.php',
             // running from project bin
@@ -62,42 +65,38 @@ function autoload(): void
         ->setVersion(Version::VERSION)
         ->setDescription('Generate PHPStan typings from var_dump output')
         ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
+        ->addOption(
+            name: 'indent',
+            shortcut: 'i',
+            mode: InputOption::VALUE_REQUIRED,
+            description: 'Indentation size (use 0 for single-line output)',
+            default: '4'
+        )
+        ->addOption(
+            name: 'quotes',
+            mode: InputOption::VALUE_REQUIRED,
+            description: 'Key quoting style: none, single, or double',
+            default: KeyQuotingStyle::NoQuotes->value
+        )
+        ->addOption(
+            name: 'class',
+            shortcut: 'c',
+            mode: InputOption::VALUE_REQUIRED,
+            description: 'Class name style: uqn (unqualified), qn (qualified), or fqn (fully qualified)',
+            default: ClassNameStyle::Unqualified->value
+        )
         ->setCode(function (
-            SymfonyStyle $io,
-            #[Option(description: 'Indentation size (use 0 for single-line output)', name: 'indent', shortcut: 'i')]
-            string $indent = '4',
-            #[Option(
-                description: 'Key quoting style: none, single, or double',
-                name: 'quotes',
-                shortcut: null,
-                suggestedValues: [
-                    KeyQuotingStyle::NoQuotes->value,
-                    KeyQuotingStyle::SingleQuotes->value,
-                    KeyQuotingStyle::DoubleQuotes->value,
-                ],
-            )
-            ]
-            string $quotes = KeyQuotingStyle::NoQuotes->value,
-            #[Option(
-                description: 'Class name style: uqn (unqualified), qn (qualified), or fqn (fully qualified)',
-                name: 'class',
-                shortcut: 'c',
-                suggestedValues: [
-                    ClassNameStyle::Unqualified->value,
-                    ClassNameStyle::Qualified->value,
-                    ClassNameStyle::FullyQualified->value,
-                ],
-            )
-            ]
-            string $class = ClassNameStyle::Unqualified->value,
+            InputInterface $input,
+            OutputInterface $output,
         ): int {
+            $io = new SymfonyStyle($input, $output);
             $stdin = fopen('php://stdin', 'r');
             if ($stdin === false) {
                 $io->getErrorStyle()->error('STDIN is not available');
                 return Command::FAILURE;
             }
-            $input = trim(stream_get_contents($stdin));
-            if (empty($input)) {
+            $data = trim(stream_get_contents($stdin));
+            if (empty($data)) {
                 $io->getErrorStyle()->error([
                     'No input provided. Please pipe var_dump output to this command.',
                     'Example: php -r \'var_dump($data);\' | bin/hell2shape',
@@ -105,12 +104,14 @@ function autoload(): void
                 return Command::FAILURE;
             }
 
+            $indent = $input->getOption('indent');
             $indent = filter_var($indent, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
             if ($indent === false) {
                 $io->getErrorStyle()->error('Indent option must be non-negative integer.');
                 return Command::FAILURE;
             }
 
+            $quotes = $input->getOption('quotes');
             $quotingStyle = KeyQuotingStyle::tryFrom($quotes);
             if ($quotingStyle === null) {
                 $quotingOptions = implode(
@@ -121,6 +122,7 @@ function autoload(): void
                 return Command::FAILURE;
             }
 
+            $class = $input->getOption('class');
             $classNameStyle = ClassNameStyle::tryFrom($class);
             if ($classNameStyle === null) {
                 $classNameOptions = implode(
@@ -134,7 +136,7 @@ function autoload(): void
             $config = new GeneratorConfig($quotingStyle, $indent, $classNameStyle);
             try {
                 $lexer = new Lexer();
-                $tokens = $lexer->tokenize($input);
+                $tokens = $lexer->tokenize($data);
 
                 $parser = new Parser();
                 $ast = $parser->parse($tokens);
