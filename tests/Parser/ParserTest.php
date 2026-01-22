@@ -2,6 +2,7 @@
 
 namespace Feolius\Hell2Shape\Tests\Parser;
 
+use Feolius\Hell2Shape\Helper\VarDumper;
 use Feolius\Hell2Shape\Lexer\Lexer;
 use Feolius\Hell2Shape\Parser\Node\AbstractNode;
 use Feolius\Hell2Shape\Parser\Node\AnonymousObjectNode;
@@ -18,7 +19,6 @@ use Feolius\Hell2Shape\Parser\Node\StdObjectItemNode;
 use Feolius\Hell2Shape\Parser\Node\StdObjectNode;
 use Feolius\Hell2Shape\Parser\Node\StringNode;
 use Feolius\Hell2Shape\Parser\Parser;
-use Feolius\Hell2Shape\Tests\VarDumper;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

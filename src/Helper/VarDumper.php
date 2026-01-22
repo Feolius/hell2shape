@@ -1,6 +1,6 @@
 <?php
 
-namespace Feolius\Hell2Shape\Tests;
+namespace Feolius\Hell2Shape\Helper;
 
 final class VarDumper
 {
@@ -8,6 +8,8 @@ final class VarDumper
     {
         ob_start();
         var_dump($variable);
-        return ob_get_clean();
+        $result = ob_get_clean();
+        assert($result !== false);
+        return $result;
     }
 }
