@@ -2,9 +2,9 @@
 
 namespace App\Tests\Lexer;
 
+use Feolius\Hell2Shape\Helper\VarDumper;
 use Feolius\Hell2Shape\Lexer\Lexer;
 use Feolius\Hell2Shape\Lexer\Token;
-use Feolius\Hell2Shape\Tests\VarDumper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
