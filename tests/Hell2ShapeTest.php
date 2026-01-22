@@ -10,6 +10,24 @@ use PHPUnit\Framework\TestCase;
 
 final class Hell2ShapeTest extends TestCase
 {
+    public function testGenerateWithDefaultConfig(): void
+    {
+        $data = [
+            'name' => 'John',
+            'age' => 30,
+        ];
+
+        $result = Hell2Shape::generate($data);
+
+        $expected = <<<'EXPECTED'
+array{
+    name: string,
+    age: int
+}
+EXPECTED;
+        $this->assertSame($expected, $result);
+    }
+
     public function testGenerateSimpleArray(): void
     {
         $data = [
@@ -52,16 +70,16 @@ final class Hell2ShapeTest extends TestCase
             'active' => true,
         ];
 
-        $config = new GeneratorConfig(keyQuotingStyle: KeyQuotingStyle::NoQuotes, indentSize: 4);
+        $config = new GeneratorConfig(keyQuotingStyle: KeyQuotingStyle::DoubleQuotes, indentSize: 2);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = <<<'EXPECTED'
 array{
-    user: array{
-        id: int,
-        name: string
-    },
-    active: bool
+  "user": array{
+    "id": int,
+    "name": string
+  },
+  "active": bool
 }
 EXPECTED;
 
