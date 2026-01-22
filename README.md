@@ -10,7 +10,14 @@ A CLI tool that analyzes PHP `var_dump()` output and generates PHPStan-compatibl
 
 ## Installation
 
-### Option 1: Download PHAR (Standalone Executable)
+### Option 1: Install via Composer (Recommended for Programmatic Usage)
+```bash
+composer require --dev feolius/hell2shape
+```
+
+This allows you to use hell2shape both programmatically in your code and via CLI.
+
+### Option 2: Download PHAR (Standalone Executable)
 Download the latest `hell2shape.phar` from the [releases page](https://github.com/Feolius/hell2shape/releases) and use it directly:
 
 ```bash
@@ -24,30 +31,52 @@ chmod +x hell2shape.phar
 php -r 'var_dump($myArray);' | ./hell2shape.phar
 ```
 
-### Option 2: Install via Composer
-```bash
-composer require feolius/hell2shape
-```
-
-**Requirements:**
-- PHP 8.3 or higher
-
-## Quick Start
-
-```bash
-# If installed via Composer
-php -r 'var_dump($myArray);' | vendor/bin/hell2shape
-
-# If using PHAR
-php -r 'var_dump($myArray);' | ./hell2shape.phar
-```
-
 ### Option 3: Use [cpx](https://cpx.dev/)
 ```bash
 php -r 'var_dump($myArray);' | cpx feolius/hell2shape
 ```
 
+**Requirements:**
+- PHP 8.3 or higher
+
 ## Usage
+
+### Programmatic Usage
+
+Use hell2shape directly in your PHP code to generate type annotations:
+
+```php
+use Feolius\Hell2Shape\Hell2Shape;
+use Feolius\Hell2Shape\Generator\GeneratorConfig;
+use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
+
+// Simple usage with default config
+$data = ['name' => 'John', 'age' => 30];
+// Default formatting
+$shape = Hell2Shape::generate($data);
+// Result: array{
+//     name: string,
+//     age: int
+// }
+
+// Single-line output
+$config = new GeneratorConfig(indentSize: 0);
+$shape = Hell2Shape::generate($data, $config);
+// Result: array{name: string, age: int}
+
+// With custom formatting
+$config = new GeneratorConfig(
+    keyQuotingStyle: KeyQuotingStyle::SingleQuotes,
+    indentSize: 2
+);
+$shape = Hell2Shape::generate($data, $config);
+// Result: array{
+//   'name': string,
+//   'age': int
+// }
+```
+
+### CLI Usage
 
 Pipe any `var_dump()` output to `hell2shape`:
 
