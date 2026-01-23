@@ -147,7 +147,7 @@ END;
         ]);
         $lexer = new Lexer();
         $tokens = $lexer->tokenize($input);
-        $last = array_last($tokens);
+        $last = current(array_slice($tokens, -1));
         self::assertEquals(Lexer::T_END, $last->type);
     }
 }
