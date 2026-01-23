@@ -106,8 +106,9 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
 
     private function formatClassName(string $className): string
     {
+        $uqn = fn(string $class) => (string)current(array_slice(explode('\\', $class), -1));
         return match ($this->config->classNameStyle) {
-            ClassNameStyle::Unqualified => array_last(explode('\\', $className)),
+            ClassNameStyle::Unqualified => $uqn($className),
             ClassNameStyle::Qualified => $className,
             ClassNameStyle::FullyQualified => '\\'.$className,
         };

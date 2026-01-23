@@ -12,7 +12,6 @@
     "bin": ["bin/hell2shape"],
     "require": {
         "php": "^8.3",
-        "symfony/polyfill": "^1.33",
         "symfony/console": "^5.1|^6.0|^7.0|^8.0"
     },
     "require-dev": {
