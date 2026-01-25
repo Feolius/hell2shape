@@ -151,14 +151,14 @@ final class ParserTest extends TestCase
 
         yield 'Empty string' => [
             'input' => [
-                'type' => ''
+                'type' => '',
             ],
             'expected' => new HashmapNode([
                 new HashmapItemNode(
                     new StringNode('type'),
                     new StringNode(''),
-                )
-            ])
+                ),
+            ]),
         ];
     }
 }
