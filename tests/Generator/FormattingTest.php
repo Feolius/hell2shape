@@ -324,4 +324,421 @@ EXPECTED;
 
         $this->assertSame($expected, $result);
     }
+
+    public function testAsDocCommentWithSimpleScalar(): void
+    {
+        $varDump = <<<'VARDUMP'
+int(42)
+VARDUMP;
+
+        $expected = '/** int */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithString(): void
+    {
+        $varDump = <<<'VARDUMP'
+string(5) "hello"
+VARDUMP;
+
+        $expected = '/** string */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithUnionType(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  [0]=>
+  int(1)
+  [1]=>
+  string(4) "test"
+}
+VARDUMP;
+
+        $expected = '/** list<int|string> */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithSimpleList(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(3) {
+  [0]=>
+  string(3) "foo"
+  [1]=>
+  string(3) "bar"
+  [2]=>
+  string(3) "baz"
+}
+VARDUMP;
+
+        $expected = '/** list<string> */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithArrayStructure(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(3) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "John"
+  ["active"]=>
+  bool(true)
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+/**
+ * array{
+ *     id: int,
+ *     name: string,
+ *     active: bool,
+ * }
+ */
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithNestedArrayStructure(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  ["user"]=>
+  array(2) {
+    ["id"]=>
+    int(1)
+    ["name"]=>
+    string(4) "John"
+  }
+  ["active"]=>
+  bool(true)
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+/**
+ * array{
+ *     user: array{
+ *         id: int,
+ *         name: string,
+ *     },
+ *     active: bool,
+ * }
+ */
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithSingleQuotes(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "test"
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+/**
+ * array{
+ *     'id': int,
+ *     'name': string,
+ * }
+ */
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::SingleQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithCustomIndent(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "test"
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+/**
+ * array{
+ *   id: int,
+ *   name: string,
+ * }
+ */
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 2,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithClassName(): void
+    {
+        $varDump = <<<'VARDUMP'
+object(App\Models\User)#1 (2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "John"
+}
+VARDUMP;
+
+        $expected = '/** User */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithFullyQualifiedClassName(): void
+    {
+        $varDump = <<<'VARDUMP'
+object(App\Models\User)#1 (2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "John"
+}
+VARDUMP;
+
+        $expected = '/** \App\Models\User */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::FullyQualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithZeroIndent(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(2) {
+  ["id"]=>
+  int(1)
+  ["name"]=>
+  string(4) "test"
+}
+VARDUMP;
+
+        $expected = '/** array{id: int, name: string} */';
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 0,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testAsDocCommentWithComplexNestedStructure(): void
+    {
+        $varDump = <<<'VARDUMP'
+array(3) {
+  ["user"]=>
+  array(3) {
+    ["id"]=>
+    int(1)
+    ["name"]=>
+    string(4) "John"
+    ["email"]=>
+    string(14) "john@example.com"
+  }
+  ["tags"]=>
+  array(2) {
+    [0]=>
+    string(3) "php"
+    [1]=>
+    string(3) "dev"
+  }
+  ["active"]=>
+  bool(true)
+}
+VARDUMP;
+
+        $expected = <<<'EXPECTED'
+/**
+ * array{
+ *     user: array{
+ *         id: int,
+ *         name: string,
+ *         email: string,
+ *     },
+ *     tags: list<string>,
+ *     active: bool,
+ * }
+ */
+EXPECTED;
+
+        $lexer = new Lexer();
+        $parser = new Parser();
+        $config = new GeneratorConfig(
+            KeyQuotingStyle::NoQuotes,
+            indentSize: 4,
+            classNameStyle: ClassNameStyle::Unqualified,
+            asDocComment: true
+        );
+        $generator = new Generator($config);
+
+        $tokens = $lexer->tokenize($varDump);
+        $ast = $parser->parse($tokens);
+        $result = $generator->generate($ast);
+
+        $this->assertSame($expected, $result);
+    }
 }
