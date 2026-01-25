@@ -148,5 +148,17 @@ final class ParserTest extends TestCase
                 ),
             ]),
         ];
+
+        yield 'Empty string' => [
+            'input' => [
+                'type' => ''
+            ],
+            'expected' => new HashmapNode([
+                new HashmapItemNode(
+                    new StringNode('type'),
+                    new StringNode(''),
+                )
+            ])
+        ];
     }
 }

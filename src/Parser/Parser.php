@@ -96,7 +96,7 @@ final class Parser
     private function parseString(): StringNode
     {
         $token = $this->consume(Lexer::T_STRING);
-        preg_match('/string\(\d+\) "(.+)"/Asu', $token->value, $matches);
+        preg_match('/string\(\d+\) "(.*)"/Asu', $token->value, $matches);
         return new StringNode($matches[1]);
     }
 
