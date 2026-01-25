@@ -336,10 +336,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
             classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
         );
         $generator = new Generator($config);
 
@@ -361,10 +361,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
             classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
         );
         $generator = new Generator($config);
 
@@ -391,10 +391,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -423,10 +423,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -463,10 +463,10 @@ EXPECTED;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -508,10 +508,10 @@ EXPECTED;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -545,10 +545,10 @@ EXPECTED;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::SingleQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::SingleQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -582,10 +582,10 @@ EXPECTED;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 2,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -612,10 +612,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -642,10 +642,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::FullyQualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::FullyQualified
         );
         $generator = new Generator($config);
 
@@ -672,10 +672,10 @@ VARDUMP;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 0,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 
@@ -728,10 +728,10 @@ EXPECTED;
         $lexer = new Lexer();
         $parser = new Parser();
         $config = new GeneratorConfig(
-            KeyQuotingStyle::NoQuotes,
+            asDocComment: true,
+            keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 4,
-            classNameStyle: ClassNameStyle::Unqualified,
-            asDocComment: true
+            classNameStyle: ClassNameStyle::Unqualified
         );
         $generator = new Generator($config);
 

@@ -66,6 +66,11 @@ function autoload(): void
         ->setDescription('Generate PHPStan typings from var_dump output')
         ->setHelp('Reads var_dump output from STDIN and outputs PHPStan type annotations.')
         ->addOption(
+            name: 'no-doc-comment',
+            mode: InputOption::VALUE_NONE,
+            description: 'Disable doc comment generation'
+        )
+        ->addOption(
             name: 'indent',
             shortcut: 'i',
             mode: InputOption::VALUE_REQUIRED,
@@ -104,6 +109,8 @@ function autoload(): void
                 return Command::FAILURE;
             }
 
+            $noDocComment = $input->getOption('no-doc-comment');
+
             $indent = $input->getOption('indent');
             $indent = filter_var($indent, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
             if ($indent === false) {
@@ -133,7 +140,12 @@ function autoload(): void
                 return Command::FAILURE;
             }
 
-            $config = new GeneratorConfig($quotingStyle, $indent, $classNameStyle);
+            $config = new GeneratorConfig(
+                asDocComment: !$noDocComment,
+                keyQuotingStyle: $quotingStyle,
+                indentSize: $indent,
+                classNameStyle: $classNameStyle
+            );
             try {
                 $lexer = new Lexer();
                 $tokens = $lexer->tokenize($data);
