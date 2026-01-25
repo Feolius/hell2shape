@@ -11,7 +11,19 @@ use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
  */
 final class TypeFormatterVisitor implements TypeVisitorInterface
 {
+    private const string DOC_COMMENT_START = '/**';
+
+    private const string DOC_COMMENT_END = ' */';
+
+    private const string DOC_COMMENT_LINE_PREFIX = ' * ';
+
     private int $currentIndent = 0;
+
+    private bool $isSingleLine = true;
+
+    private bool $inStructure = false;
+
+    private bool $isEntryPoint = true;
 
     public function __construct(
         private readonly GeneratorConfig $config,
@@ -20,7 +32,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
 
     public function visitScalarType(ScalarType $type): string
     {
-        return $type->getTypeName();
+        return $this->outputWrapper($type->getTypeName());
     }
 
     public function visitUnionType(UnionType $type): string
@@ -30,40 +42,58 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
             $type->types
         );
 
-        return implode('|', $typeStrings);
+        return $this->outputWrapper(implode('|', $typeStrings));
     }
 
     public function visitListType(ListType $type): string
     {
-        return 'list<'.$type->elementType->accept($this).'>';
+        return $this->outputWrapper('list<'.$type->elementType->accept($this).'>');
     }
 
     public function visitHashmapType(HashmapType $type): string
     {
-        return $this->formatStructure('array', $type->keys);
+        return $this->outputWrapper($this->formatStructure('array', $type->keys));
     }
 
     public function visitStdObjectType(StdObjectType $type): string
     {
-        return $this->formatStructure('object', $type->keys);
+        return $this->outputWrapper($this->formatStructure('object', $type->keys));
     }
 
     public function visitObjectType(ObjectType $type): string
     {
-        return $this->formatClassName($type->className);
+        return $this->outputWrapper($this->formatClassName($type->className));
+    }
+
+    private function outputWrapper(string $content): string
+    {
+        if (!$this->config->asDocComment || $this->inStructure) {
+            return $content;
+        }
+        if ($this->isSingleLine) {
+            return self::DOC_COMMENT_START.' '.$content.self::DOC_COMMENT_END;
+        }
+
+        return self::DOC_COMMENT_START.PHP_EOL.self::DOC_COMMENT_LINE_PREFIX.$content.PHP_EOL.self::DOC_COMMENT_END;
     }
 
     /**
-     * @param array<string|int, HashmapKey>|array<string, StdObjectKey> $keys
+     * @param  array<string|int, HashmapKey>|array<string, StdObjectKey>  $keys
      */
     private function formatStructure(string $prefix, array $keys): string
     {
         if (empty($keys)) {
             return $prefix;
         }
+        $isEntryPoint = $this->isEntryPoint;
+        if ($isEntryPoint) {
+            $this->isSingleLine = $this->config->indentSize === 0;
+            $this->inStructure = true;
+            $this->isEntryPoint = false;
+        }
 
         // Single-line format (no indentation)
-        if ($this->config->indentSize === 0) {
+        if ($this->isSingleLine) {
             $items = [];
             foreach ($keys as $key) {
                 $items[] = $this->formatKey($key);
@@ -81,9 +111,16 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
         }
 
         $this->currentIndent -= $this->config->indentSize;
-        $outerIndent = str_repeat(' ', $this->currentIndent);
+        if ($isEntryPoint) {
+            $this->inStructure = false;
+        }
 
-        return $prefix."{\n".implode(",\n", $items)."\n".$outerIndent.'}';
+        $newLineSeparator = $this->config->asDocComment ? PHP_EOL.self::DOC_COMMENT_LINE_PREFIX : PHP_EOL;
+        $outerIndent = str_repeat(' ', $this->currentIndent);
+        return $prefix.'{'.$newLineSeparator.implode(
+            ','.$newLineSeparator,
+            $items
+        ).','.$newLineSeparator.$outerIndent.'}';
     }
 
     private function formatKey(HashmapKey|StdObjectKey $key): string
@@ -106,7 +143,7 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
 
     private function formatClassName(string $className): string
     {
-        $uqn = fn(string $class) => (string)current(array_slice(explode('\\', $class), -1));
+        $uqn = static fn(string $class) => (string)current(array_slice(explode('\\', $class), -1));
         return match ($this->config->classNameStyle) {
             ClassNameStyle::Unqualified => $uqn($className),
             ClassNameStyle::Qualified => $className,

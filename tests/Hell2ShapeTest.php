@@ -22,7 +22,7 @@ final class Hell2ShapeTest extends TestCase
         $expected = <<<'EXPECTED'
 array{
     name: string,
-    age: int
+    age: int,
 }
 EXPECTED;
         $this->assertSame($expected, $result);
@@ -77,9 +77,9 @@ EXPECTED;
 array{
   "user": array{
     "id": int,
-    "name": string
+    "name": string,
   },
-  "active": bool
+  "active": bool,
 }
 EXPECTED;
 
@@ -128,8 +128,8 @@ EXPECTED;
         $expected = <<<'EXPECTED'
 array{
   user: array{
-    id: int
-  }
+    id: int,
+  },
 }
 EXPECTED;
 

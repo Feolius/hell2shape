@@ -42,10 +42,10 @@ array{
     user: array{
         id: int,
         name: string,
-        email: string
+        email: string,
     },
     tags: list<string>,
-    active: bool
+    active: bool,
 }
 EXPECTED;
 
@@ -75,7 +75,7 @@ VARDUMP;
         $expected = <<<'EXPECTED'
 array{
     'id': int,
-    'name': string
+    'name': string,
 }
 EXPECTED;
 
@@ -111,9 +111,9 @@ VARDUMP;
 array{
   user: array{
     id: int,
-    name: string
+    name: string,
   },
-  active: bool
+  active: bool,
 }
 EXPECTED;
 
@@ -146,7 +146,7 @@ VARDUMP;
 array{
     0: string,
     5: string,
-    10: int
+    10: int,
 }
 EXPECTED;
 
@@ -182,7 +182,7 @@ array{
     0: string,
     "name": string,
     10: int,
-    "email": string
+    "email": string,
 }
 EXPECTED;
 
@@ -305,7 +305,7 @@ VARDUMP;
         $expected = <<<'EXPECTED'
 array{
     user: User,
-    post: Post
+    post: Post,
 }
 EXPECTED;
 
