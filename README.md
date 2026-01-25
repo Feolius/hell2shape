@@ -50,30 +50,41 @@ use Feolius\Hell2Shape\Hell2Shape;
 use Feolius\Hell2Shape\Generator\GeneratorConfig;
 use Feolius\Hell2Shape\Generator\KeyQuotingStyle;
 
-// Simple usage with default config
+// Simple usage with default config (generates PSR-5 doc-comment format)
 $data = ['name' => 'John', 'age' => 30];
-// Default formatting
 $shape = Hell2Shape::generate($data);
+// Result: /**
+//          * array{
+//          *     name: string,
+//          *     age: int,
+//          * }
+//          */
+
+// Without doc-comment wrapper
+$config = GeneratorConfig::withoutDocComment();
+$shape = Hell2Shape::generate($data, $config);
 // Result: array{
 //     name: string,
-//     age: int
+//     age: int,
 // }
 
-// Single-line output
-$config = new GeneratorConfig(indentSize: 0);
+// Single-line output without doc-comment
+$config = GeneratorConfig::withoutDocComment(indentSize: 0);
 $shape = Hell2Shape::generate($data, $config);
 // Result: array{name: string, age: int}
 
-// With custom formatting
+// With custom formatting (doc-comment is default)
 $config = new GeneratorConfig(
     keyQuotingStyle: KeyQuotingStyle::SingleQuotes,
-    indentSize: 2
+    indentSize: 2,
 );
 $shape = Hell2Shape::generate($data, $config);
-// Result: array{
-//   'name': string,
-//   'age': int
-// }
+// Result: /**
+//          * array{
+//          *   'name': string,
+//          *   'age': int,
+//          * }
+//          */
 ```
 
 ### CLI Usage
@@ -100,15 +111,40 @@ array(2) {
 }
 ```
 
-**Output (PHPStan type):**
+**Output (PHPStan type with doc-comment - default):**
+```php
+/**
+ * array{
+ *     name: string,
+ *     age: int,
+ * }
+ */
+```
+
+**Output (without doc-comment using `--no-doc-comment`):**
 ```php
 array{
     name: string,
-    age: int
+    age: int,
 }
 ```
 
 ## Options
+
+### `--no-doc-comment`
+Disable PSR-5 doc-comment wrapper around the output (by default, output is wrapped in `/** */`)
+
+```bash
+# Default: with doc-comment wrapper
+hell2shape
+# Output: /**
+#          * array{...}
+#          */
+
+# Without doc-comment wrapper
+hell2shape --no-doc-comment
+# Output: array{...}
+```
 
 ### `--indent` / `-i`
 Control indentation for multi-line output (default: 4 spaces)
@@ -177,10 +213,12 @@ php -r 'var_dump(["id" => 1, "name" => "Alice"]);' | hell2shape
 ```
 Output:
 ```php
-array{
-    id: int,
-    name: string
-}
+/**
+ * array{
+ *     id: int,
+ *     name: string,
+ * }
+ */
 ```
 
 ### Nested Structure
@@ -189,17 +227,31 @@ php -r 'var_dump(["user" => ["name" => "Bob", "roles" => ["admin", "user"]]]);' 
 ```
 Output:
 ```php
+/**
+ * array{
+ *     user: array{
+ *         name: string,
+ *         roles: list<string>,
+ *     },
+ * }
+ */
+```
+
+### Without Doc-Comment
+```bash
+php -r 'var_dump(["id" => 1, "active" => true]);' | hell2shape --no-doc-comment
+```
+Output:
+```php
 array{
-    user: array{
-        name: string,
-        roles: list<string>
-    }
+    id: int,
+    active: bool,
 }
 ```
 
 ### Single-line Output
 ```bash
-php -r 'var_dump(["id" => 1, "active" => true]);' | hell2shape --indent=0
+php -r 'var_dump(["id" => 1, "active" => true]);' | hell2shape --no-doc-comment --indent=0
 ```
 Output:
 ```php
@@ -222,7 +274,7 @@ php -r 'namespace App\Models; class User {} var_dump(new User());' | hell2shape
 ```
 Output (default - unqualified):
 ```php
-User
+/** User */
 ```
 
 With qualified names:
@@ -231,7 +283,7 @@ php -r 'namespace App\Models; class User {} var_dump(new User());' | hell2shape 
 ```
 Output:
 ```php
-App\Models\User
+/** App\Models\User */
 ```
 
 With fully qualified names:
@@ -240,7 +292,7 @@ php -r 'namespace App\Models; class User {} var_dump(new User());' | hell2shape 
 ```
 Output:
 ```php
-\App\Models\User
+/** \App\Models\User */
 ```
 
 ## Limitations
