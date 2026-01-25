@@ -144,6 +144,7 @@ END;
             'test_false' => false,
             'test_true' => true,
             "test_string" => "bal\ndfgdfg",
+            "key with spaces & \\other shit %^&*()\"#$" => ''
         ]);
         $lexer = new Lexer();
         $tokens = $lexer->tokenize($input);
