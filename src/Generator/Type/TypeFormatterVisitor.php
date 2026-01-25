@@ -32,49 +32,104 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
 
     public function visitScalarType(ScalarType $type): string
     {
-        return $this->outputWrapper($type->getTypeName());
+        return $this->resultWrapper($this->scalarTypeResultFn($type));
     }
 
     public function visitUnionType(UnionType $type): string
+    {
+        return $this->resultWrapper($this->unionTypeResultFn($type));
+    }
+
+    public function visitListType(ListType $type): string
+    {
+        return $this->resultWrapper($this->listTypeResultFn($type));
+    }
+
+    public function visitHashmapType(HashmapType $type): string
+    {
+        return $this->resultWrapper($this->hashmapTypeResultFn($type));
+    }
+
+    public function visitStdObjectType(StdObjectType $type): string
+    {
+        return $this->resultWrapper($this->stdObjectTypeResultFn($type));
+    }
+
+    public function visitObjectType(ObjectType $type): string
+    {
+        return $this->resultWrapper($this->objectTypeResultFn($type));
+    }
+
+    /**
+     * @return \Closure(): string
+     */
+    private function scalarTypeResultFn(ScalarType $type): \Closure
+    {
+        return fn() => $type->getTypeName();
+    }
+
+    /**
+     * @return \Closure(): string
+     */
+    public function unionTypeResultFn(UnionType $type): \Closure
     {
         $typeStrings = array_map(
             fn(TypeInterface $t) => $t->accept($this),
             $type->types
         );
 
-        return $this->outputWrapper(implode('|', $typeStrings));
+        return fn() => implode('|', $typeStrings);
     }
 
-    public function visitListType(ListType $type): string
+    /**
+     * @return \Closure(): string
+     */
+    public function listTypeResultFn(ListType $type): \Closure
     {
-        return $this->outputWrapper('list<'.$type->elementType->accept($this).'>');
+        return fn() => 'list<'.$type->elementType->accept($this).'>';
     }
 
-    public function visitHashmapType(HashmapType $type): string
+    /**
+     * @return \Closure(): string
+     */
+    public function hashmapTypeResultFn(HashmapType $type): \Closure
     {
-        return $this->outputWrapper($this->formatStructure('array', $type->keys));
+        return fn() => $this->formatStructure('array', $type->keys);
     }
 
-    public function visitStdObjectType(StdObjectType $type): string
+    /**
+     * @return \Closure(): string
+     */
+    public function stdObjectTypeResultFn(StdObjectType $type): \Closure
     {
-        return $this->outputWrapper($this->formatStructure('object', $type->keys));
+        return fn() => $this->formatStructure('object', $type->keys);
     }
 
-    public function visitObjectType(ObjectType $type): string
+    /**
+     * @return \Closure(): string
+     */
+    public function objectTypeResultFn(ObjectType $type): \Closure
     {
-        return $this->outputWrapper($this->formatClassName($type->className));
+        return fn() => $this->formatClassName($type->className);
     }
 
-    private function outputWrapper(string $content): string
+    /**
+     * @param  \Closure(): string $resultFn
+     */
+    private function resultWrapper(\Closure $resultFn): string
     {
-        if (!$this->config->asDocComment || $this->inStructure) {
-            return $content;
+        $isEntryPoint = $this->isEntryPoint;
+        if ($this->isEntryPoint) {
+            $this->isEntryPoint = false;
+        }
+        $result = $resultFn();
+        if (!$isEntryPoint || !$this->config->asDocComment) {
+            return $result;
         }
         if ($this->isSingleLine) {
-            return self::DOC_COMMENT_START.' '.$content.self::DOC_COMMENT_END;
+            return self::DOC_COMMENT_START.' '.$result.self::DOC_COMMENT_END;
         }
-
-        return self::DOC_COMMENT_START.PHP_EOL.self::DOC_COMMENT_LINE_PREFIX.$content.PHP_EOL.self::DOC_COMMENT_END;
+        return self::DOC_COMMENT_START.PHP_EOL.self::DOC_COMMENT_LINE_PREFIX.$result.PHP_EOL.self::DOC_COMMENT_END;
     }
 
     /**
@@ -85,12 +140,8 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
         if (empty($keys)) {
             return $prefix;
         }
-        $isEntryPoint = $this->isEntryPoint;
-        if ($isEntryPoint) {
-            $this->isSingleLine = $this->config->indentSize === 0;
-            $this->inStructure = true;
-            $this->isEntryPoint = false;
-        }
+
+        $this->isSingleLine = $this->config->indentSize === 0;
 
         // Single-line format (no indentation)
         if ($this->isSingleLine) {
@@ -111,9 +162,6 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
         }
 
         $this->currentIndent -= $this->config->indentSize;
-        if ($isEntryPoint) {
-            $this->inStructure = false;
-        }
 
         $newLineSeparator = $this->config->asDocComment ? PHP_EOL.self::DOC_COMMENT_LINE_PREFIX : PHP_EOL;
         $outerIndent = str_repeat(' ', $this->currentIndent);
