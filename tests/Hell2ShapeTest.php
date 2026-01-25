@@ -20,10 +20,12 @@ final class Hell2ShapeTest extends TestCase
         $result = Hell2Shape::generate($data);
 
         $expected = <<<'EXPECTED'
-array{
-    name: string,
-    age: int,
-}
+/**
+ * array{
+ *     name: string,
+ *     age: int,
+ * }
+ */
 EXPECTED;
         $this->assertSame($expected, $result);
     }
@@ -39,7 +41,7 @@ EXPECTED;
         $config = new GeneratorConfig(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
-        $expected = 'array{name: string, age: int, active: bool}';
+        $expected = '/** array{name: string, age: int, active: bool} */';
         $this->assertSame($expected, $result);
     }
 
@@ -53,7 +55,7 @@ EXPECTED;
             'tags' => ['php', 'dev'],
         ];
 
-        $config = new GeneratorConfig(indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'array{user: array{id: int, name: string}, tags: list<string>}';
@@ -70,7 +72,7 @@ EXPECTED;
             'active' => true,
         ];
 
-        $config = new GeneratorConfig(keyQuotingStyle: KeyQuotingStyle::DoubleQuotes, indentSize: 2);
+        $config = GeneratorConfig::withoutDocComment(keyQuotingStyle: KeyQuotingStyle::DoubleQuotes, indentSize: 2);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = <<<'EXPECTED'
@@ -93,7 +95,7 @@ EXPECTED;
             'name' => 'test',
         ];
 
-        $config = new GeneratorConfig(keyQuotingStyle: KeyQuotingStyle::SingleQuotes, indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(keyQuotingStyle: KeyQuotingStyle::SingleQuotes, indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = "array{'id': int, 'name': string}";
@@ -107,7 +109,7 @@ EXPECTED;
             'name' => 'test',
         ];
 
-        $config = new GeneratorConfig(keyQuotingStyle: KeyQuotingStyle::DoubleQuotes, indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(keyQuotingStyle: KeyQuotingStyle::DoubleQuotes, indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'array{"id": int, "name": string}';
@@ -122,7 +124,7 @@ EXPECTED;
             ],
         ];
 
-        $config = new GeneratorConfig(keyQuotingStyle: KeyQuotingStyle::NoQuotes, indentSize: 2);
+        $config = GeneratorConfig::withoutDocComment(keyQuotingStyle: KeyQuotingStyle::NoQuotes, indentSize: 2);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = <<<'EXPECTED'
@@ -140,7 +142,7 @@ EXPECTED;
     {
         $data = ['foo', 'bar', 'baz'];
 
-        $config = new GeneratorConfig(indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'list<string>';
@@ -157,7 +159,7 @@ EXPECTED;
             'null' => null,
         ];
 
-        $config = new GeneratorConfig(indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'array{string: string, int: int, float: float, bool: bool, null: null}';
@@ -168,7 +170,7 @@ EXPECTED;
     {
         $data = [];
 
-        $config = new GeneratorConfig(indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'array';
@@ -183,7 +185,7 @@ EXPECTED;
             public string $name = 'John';
         };
 
-        $config = new GeneratorConfig(
+        $config = GeneratorConfig::withoutDocComment(
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
             indentSize: 0,
             classNameStyle: ClassNameStyle::Unqualified
@@ -200,7 +202,7 @@ EXPECTED;
         $data->id = 1;
         $data->name = 'John';
 
-        $config = new GeneratorConfig(indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'object{id: int, name: string}';
@@ -228,7 +230,7 @@ EXPECTED;
             ],
         ];
 
-        $config = new GeneratorConfig(indentSize: 0);
+        $config = GeneratorConfig::withoutDocComment(indentSize: 0);
         $result = Hell2Shape::generate($data, $config);
 
         $expected = 'array{users: list<array{id: int, name: string, tags: list<string>}>, meta: array{total: int, page: int}}';

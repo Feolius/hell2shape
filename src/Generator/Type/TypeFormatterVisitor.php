@@ -21,8 +21,6 @@ final class TypeFormatterVisitor implements TypeVisitorInterface
 
     private bool $isSingleLine = true;
 
-    private bool $inStructure = false;
-
     private bool $isEntryPoint = true;
 
     public function __construct(
