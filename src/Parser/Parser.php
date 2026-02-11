@@ -160,7 +160,7 @@ final class Parser
         $token = $this->getCurrentToken();
         if ($token->type === Lexer::T_STRING_KEY) {
             $this->consume(Lexer::T_STRING_KEY);
-            preg_match('/\["(.+)"\]/', $token->value, $matches);
+            preg_match('/\["(.*)"\]/', $token->value, $matches);
             return new StringNode($matches[1]);
         }
 
