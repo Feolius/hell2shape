@@ -160,5 +160,18 @@ final class ParserTest extends TestCase
                 ),
             ]),
         ];
+
+        $objectWithEmptyProperty = new \stdClass();
+        $objectWithEmptyProperty->{''} = 123;
+
+        yield 'Object with an empty property' => [
+            'input' => $objectWithEmptyProperty,
+            'expected' => new StdObjectNode([
+                new StdObjectItemNode(
+                    new StringNode(''),
+                    new IntNode(123),
+                ),
+            ]),
+        ];
     }
 }
