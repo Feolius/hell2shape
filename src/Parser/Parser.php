@@ -76,7 +76,7 @@ final class Parser
     private function parseInt(): IntNode
     {
         $token = $this->consume(Lexer::T_INT);
-        preg_match('/int\((\d+)\)/A', $token->value, $matches);
+        preg_match('/int\((-?\d+)\)/A', $token->value, $matches);
         return new IntNode((int)$matches[1]);
     }
 
@@ -86,7 +86,7 @@ final class Parser
     private function parseFloat(): FloatNode
     {
         $token = $this->consume(Lexer::T_FLOAT);
-        preg_match('/float\(([\d.]+)\)/A', $token->value, $matches);
+        preg_match('/float\(([\-?\d.]+)\)/A', $token->value, $matches);
         return new FloatNode((float)$matches[1]);
     }
 

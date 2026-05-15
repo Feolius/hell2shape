@@ -97,9 +97,9 @@ final class Lexer
     {
         $patterns = [
             self::T_STRING => 'string\(\d+\) \"[^\"]*\"',
-            self::T_INT => 'int\(\d+\)',
+            self::T_INT => 'int\(\-?\d+\)',
             self::T_BOOL => 'bool\((?:true|false)\)',
-            self::T_FLOAT => 'float\(\d+\.\d+\)',
+            self::T_FLOAT => 'float\(\-?\d+\.?\d*\)',
             self::T_NULL => 'NULL',
             self::T_UNINITIALIZED => 'uninitialized\([\w\\\\]+\)',
             self::T_ARRAY => 'array\(\d+\)',
