@@ -3,7 +3,7 @@
 namespace Feolius\Hell2Shape\Generator\Type;
 
 /**
- * @template R
+ * @template-covariant R
  */
 interface TypeVisitorInterface
 {

@@ -3,6 +3,3 @@ parameters:
 	paths:
 		- src
 		- bin/hell2shape
-	ignoreErrors:
-	typeAliases:
-		Langcode: '"en"|"de"|"es"|"fr"|"ko"|"ru"|"zh-hans"'

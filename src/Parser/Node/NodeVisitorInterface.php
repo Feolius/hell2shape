@@ -5,7 +5,7 @@ namespace Feolius\Hell2Shape\Parser\Node;
 /**
  * Generic visitor interface for traversing the AST.
  *
- * @template R
+ * @template-covariant R
  */
 interface NodeVisitorInterface
 {
