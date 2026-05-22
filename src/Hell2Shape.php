@@ -28,8 +28,7 @@ final class Hell2Shape
         $lexer = new Lexer();
         $tokens = $lexer->tokenize($varDumpOutput);
 
-        $parser = new Parser();
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
 
         $config = $config ?? new GeneratorConfig();
         $generator = new Generator($config);

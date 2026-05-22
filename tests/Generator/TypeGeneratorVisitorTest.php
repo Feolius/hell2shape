@@ -18,11 +18,10 @@ final class TypeGeneratorVisitorTest extends TestCase
         KeyQuotingStyle $keyQuotingStyle = KeyQuotingStyle::NoQuotes
     ): void {
         $lexer = new Lexer();
-        $parser = new Parser();
         $visitor = new TypeGeneratorVisitor();
 
         $tokens = $lexer->tokenize($varDumpOutput);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $ast->accept($visitor);
 
         $this->assertSame($expectedType, $result->toString());

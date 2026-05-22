@@ -149,13 +149,9 @@ function autoload(): void
             try {
                 $lexer = new Lexer();
                 $tokens = $lexer->tokenize($data);
-
-                $parser = new Parser();
-                $ast = $parser->parse($tokens);
-
+                $ast = Parser::parse($tokens);
                 $generator = new Generator($config);
                 $result = $generator->generate($ast);
-
                 $io->writeln($result);
                 return Command::SUCCESS;
             } catch (LexerException $e) {
