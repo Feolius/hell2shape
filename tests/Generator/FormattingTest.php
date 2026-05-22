@@ -50,12 +50,11 @@ array{
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(KeyQuotingStyle::NoQuotes, indentSize: 4);
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -80,12 +79,11 @@ array{
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(KeyQuotingStyle::SingleQuotes, indentSize: 4);
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -118,12 +116,11 @@ array{
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(KeyQuotingStyle::NoQuotes, indentSize: 2);
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -151,12 +148,11 @@ array{
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(KeyQuotingStyle::SingleQuotes, indentSize: 4);
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -187,12 +183,11 @@ array{
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(KeyQuotingStyle::DoubleQuotes, indentSize: 4);
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -212,7 +207,6 @@ VARDUMP;
         $expected = 'User';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(
             KeyQuotingStyle::NoQuotes,
             indentSize: 4,
@@ -221,7 +215,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -241,7 +235,6 @@ VARDUMP;
         $expected = 'App\Models\User';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(
             KeyQuotingStyle::NoQuotes,
             indentSize: 4,
@@ -250,7 +243,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -270,7 +263,6 @@ VARDUMP;
         $expected = '\App\Models\User';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(
             KeyQuotingStyle::NoQuotes,
             indentSize: 4,
@@ -279,7 +271,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -310,7 +302,6 @@ array{
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = GeneratorConfig::withoutDocComment(
             KeyQuotingStyle::NoQuotes,
             indentSize: 4,
@@ -319,7 +310,7 @@ EXPECTED;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -334,7 +325,6 @@ VARDUMP;
         $expected = '/** int */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -344,7 +334,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -359,7 +349,6 @@ VARDUMP;
         $expected = '/** string */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -369,7 +358,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -389,7 +378,6 @@ VARDUMP;
         $expected = '/** list<int|string> */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -399,7 +387,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -421,7 +409,6 @@ VARDUMP;
         $expected = '/** list<string> */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -431,7 +418,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -461,7 +448,6 @@ VARDUMP;
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -471,7 +457,7 @@ EXPECTED;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -506,7 +492,6 @@ VARDUMP;
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -516,7 +501,7 @@ EXPECTED;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -543,7 +528,6 @@ VARDUMP;
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::SingleQuotes,
@@ -553,7 +537,7 @@ EXPECTED;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -580,7 +564,6 @@ VARDUMP;
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -590,7 +573,7 @@ EXPECTED;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -610,7 +593,6 @@ VARDUMP;
         $expected = '/** User */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -620,7 +602,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -640,7 +622,6 @@ VARDUMP;
         $expected = '/** \App\Models\User */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -650,7 +631,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -670,7 +651,6 @@ VARDUMP;
         $expected = '/** array{id: int, name: string} */';
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -680,7 +660,7 @@ VARDUMP;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);
@@ -726,7 +706,6 @@ VARDUMP;
 EXPECTED;
 
         $lexer = new Lexer();
-        $parser = new Parser();
         $config = new GeneratorConfig(
             asDocComment: true,
             keyQuotingStyle: KeyQuotingStyle::NoQuotes,
@@ -736,7 +715,7 @@ EXPECTED;
         $generator = new Generator($config);
 
         $tokens = $lexer->tokenize($varDump);
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
         $result = $generator->generate($ast);
 
         $this->assertSame($expected, $result);

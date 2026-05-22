@@ -33,7 +33,15 @@ final class Parser
      * @param list<Token> $tokens
      * @throws ParserException
      */
-    public function parse(array $tokens): AbstractNode
+    public static function parse(array $tokens): AbstractNode
+    {
+        return (new self($tokens))->doParse();
+    }
+
+    /**
+     * @param list<Token> $tokens
+     */
+    private function __construct(array $tokens)
     {
         $this->tokens = array_values(array_filter(
             $tokens,
@@ -41,11 +49,17 @@ final class Parser
         ));
         $this->position = 0;
 
+    }
+
+    /**
+     * @throws ParserException
+     */
+    private function doParse(): AbstractNode
+    {
         $node = $this->parseValue();
-
         $this->expect(Lexer::T_END);
-
         return $node;
+
     }
 
     /**

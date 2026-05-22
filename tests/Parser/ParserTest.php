@@ -54,8 +54,7 @@ final class ParserTest extends TestCase
         $dump = VarDumper::dump($input);
         $lexer = new Lexer();
         $tokens = $lexer->tokenize($dump);
-        $parser = new Parser();
-        $ast = $parser->parse($tokens);
+        $ast = Parser::parse($tokens);
 
         $this->assertEquals($expected, $ast);
     }
