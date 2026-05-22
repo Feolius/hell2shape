@@ -96,7 +96,8 @@ final class Lexer
     private function buildRegexp(): string
     {
         $patterns = [
-            self::T_STRING => 'string\(\d+\) \"[^\"]*\"',
+            // @TODO This fails if double quote is followed by new line. Possibly requires preprocessor.
+            self::T_STRING => 'string\(\d+\) \".*?\"(?=\\r?\\n|\z)',
             self::T_INT => 'int\(\-?\d+\)',
             self::T_BOOL => 'bool\((?:true|false)\)',
             self::T_FLOAT => 'float\(\-?\d+\.?\d*\)',
