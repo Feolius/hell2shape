@@ -137,7 +137,7 @@ END;
             'text_negative_int' => -5,
             'test_float' => 7.9999999999999991118,
             'test_negative_float' => -7.9999999999999991118,
-            'test_float_with_no_decimal' => (float) 100,
+            'test_float_with_no_decimal' => (float)100,
             'test_arr' => $testArr,
             'empty_array' => [],
             'test_std' => $stdObj,
@@ -147,6 +147,7 @@ END;
             'test_false' => false,
             'test_true' => true,
             "test_string" => "bal\ndfgdfg",
+            "test_string_with_double_quote" => 'fgfd"sdf',
             "key with spaces & \\other shit %^&*()\"#$" => '',
         ]);
         $lexer = new Lexer();
